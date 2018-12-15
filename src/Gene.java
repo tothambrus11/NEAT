@@ -13,9 +13,9 @@ class Gene {
 
     int getInnovationNumber(int from, int to) {
         boolean isNew = true;
-        int connectionInnovationNumber = App.innovationCount;
-        for (int i = 0; i < App.innovationCount; i++) {
-            if (App.innovationIn.get(i) == from && App.innovationOut.get(i) == to) {
+        int connectionInnovationNumber = innovationCount;
+        for (int i = 0; i < innovationCount; i++) {
+            if (innovationIn.get(i) == from && innovationOut.get(i) == to) {
                 isNew = false;
                 connectionInnovationNumber = i;
                 break;
@@ -23,42 +23,37 @@ class Gene {
         }
 
         if (isNew) {
-            App.innovationIn.add(from);
-            App.innovationOut.add(to);
-            App.innovationCount++;
+            innovationIn.add(from);
+            innovationOut.add(to);
+            innovationCount++;
         }
         return connectionInnovationNumber;
     }
 
     void mutateWeight() {
-        weight += App.processing.randomGaussian() / 20;
-        if (weight > App.weightMax) {
-            weight = App.weightMax;
+        weight += randomGaussian() / 20;
+        if (weight > weightMax) {
+            weight = weightMax;
         }
-        if (weight < App.weightMin) {
-            weight = App.weightMin;
+        if (weight < weightMin) {
+            weight = weightMin;
         }
     }
 
     void restartWeight() {
-        weight = App.processing.random(-1, 1);
-        if (weight > App.weightMax) {
-            weight = App.weightMax;
+        weight = random(-1, 1);
+        if (weight > weightMax) {
+            weight = weightMax;
         }
-        if (weight < App.weightMin) {
-            weight = App.weightMin;
+        if (weight < weightMin) {
+            weight = weightMin;
         }
     }
 
-    void changeActivation() {
-        enabled = !enabled;
-    }
-
-    Gene cloneGene() {
+    Gene clone() {
         Gene clone = new Gene(from, to, weight);
         clone.enabled = enabled;
         clone.innovationNumber = innovationNumber;
-
         return clone;
     }
 }

@@ -7,11 +7,17 @@ public class App extends PApplet {
 
     // A környezet eltárolása - erre hivatkozva hívhatjuk meg a processing függvényeket
     public static PApplet processing;
+
     static ArrayList<Integer> innovationIn;
     static ArrayList<Integer> innovationOut;
     static int innovationCount = 0;
-    static float weightMin, weightMax, c1, c2, c3, weightMaxSize, nodeMaxSize;
+
+    static float weightMin, weightMax;
+    static float c1, c2, c3, threshold;
+    static float weightMaxSize, nodeMaxSize;
     static Genome g1, g2;
+
+    static Population pop;
 
     public static void main(String[] args) {
         PApplet.main("App", args);
@@ -21,17 +27,22 @@ public class App extends PApplet {
         size(800, 400);
     }
 
+
     public void setup() {
-        innovationIn = new ArrayList<Integer>();
-        innovationOut = new ArrayList<Integer>();
+        innovationIn = new ArrayList<>();
+        innovationOut = new ArrayList<>();
+        size(800, 400);
         weightMaxSize = 4;
         nodeMaxSize = 15;
 
-        weightMin = -10;
-        weightMax = 10;
+        weightMin = -100;
+        weightMax = 100;
         c1 = 1;
         c2 = 1;
         c3 = 0.4f;
+        threshold = 3;
+
+        pop = new Population(2, 1, 5);
 
         g1 = new Genome(2, 1);
         g1.nodes.add(new Node(4));
@@ -70,24 +81,35 @@ public class App extends PApplet {
         g2.genes.add(new Gene(3, 4, -1));
         g2.genes.add(new Gene(0, 5, -1));
         g2.connectNodes();
-        frameRate(100);
+        frameRate(60);
         background(255);
-
-        processing = this;
+        //println(g1.feedForward(new float[]{1, 1}));
+        //g2=g2.crossover(g1);
     }
 
     public void draw() {
         background(255);
         g2.mutate();
-        g1.printGenome();
-        g2.printGenome();
+        //g1.printGenome();
+        //g2.printGenome();
         g1.drawGenome(0, 0, 400, 200, nodeMaxSize, weightMaxSize);
-        g2.drawGenome(400, 0, 800, 200, nodeMaxSize, weightMaxSize);
-        g2.drawGenome1(0, 200, 400, 400, nodeMaxSize, weightMaxSize);
-        g2.drawGenome2(400, 200, 800, 400, nodeMaxSize, weightMaxSize);
-        if (random(1) < 0.005) g2 = g1.crossover(g2);
-        println(g2.distance(g1, c1 / 100, c2 / 100, c3));
+        pop.genomes.get(0).drawGenome1(400, 0, 800, 200, nodeMaxSize, weightMaxSize);
+        pop.genomes.get(1).drawGenome1(0, 200, 400, 400, nodeMaxSize, weightMaxSize);
+        pop.genomes.get(2).drawGenome1(400, 200, 800, 400, nodeMaxSize, weightMaxSize);
+        if (random(1) < 0.03) {
+            pop.genomes.set(0, g1.crossover(pop.genomes.get(0)));
+        }
+        pop.mutate();
+        pop.generateSpecies();
+        for (int i = 0; i < pop.species.size(); i++) {
+            for (int j = 0; j < pop.species.get(i).size(); j++) {
+                //pop.species.get(i).get(j).printGenome();
+            }
+        }
+        println(pop.species.size());
+        println(pop.genomes.get(0).distance(pop.genomes.get(1), pop.size));
+        //println(g2.distance(g1));
+        //println(g1.feedForward(new float[]{1, 1}));
     }
-
 
 }

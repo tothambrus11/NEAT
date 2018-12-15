@@ -4,11 +4,11 @@ class Gene {
     boolean enabled = true;
     int innovationNumber;
 
-    Gene(int from_, int to_, double weight_) {
-        from = from_;
-        to = to_;
-        weight = weight_;
-        innovationNumber = getInnovationNumber(from, to);
+    Gene(int from, int to, double weight) {
+        this.from = from;
+        this.to = to;
+        this.weight = weight;
+        this.innovationNumber = getInnovationNumber(from, to);
     }
 
     int getInnovationNumber(int from, int to) {
@@ -34,8 +34,7 @@ class Gene {
         weight += App.processing.randomGaussian() / 20;
         if (weight > App.weightMax) {
             weight = App.weightMax;
-        }
-        if (weight < App.weightMin) {
+        } else if (weight < App.weightMin) {
             weight = App.weightMin;
         }
     }
@@ -44,8 +43,7 @@ class Gene {
         weight = App.processing.random(-1, 1);
         if (weight > App.weightMax) {
             weight = App.weightMax;
-        }
-        if (weight < App.weightMin) {
+        } else if (weight < App.weightMin) {
             weight = App.weightMin;
         }
     }

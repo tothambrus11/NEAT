@@ -154,11 +154,11 @@ class Genome {
             connectNodes();
         }
         if (App.processing.random(1) < 0.8) {
-            for (int i = 0; i < genes.size(); i++) {
+            for (Gene gene : genes) {
                 if (App.processing.random(1) < 0.9) {
-                    genes.get(i).mutateWeight();
+                    gene.mutateWeight();
                 } else {
-                    genes.get(i).restartWeight();
+                    gene.restartWeight();
                 }
             }
             connectNodes();
@@ -198,9 +198,9 @@ class Genome {
 
     int largestInnovationNumber() {
         int largestInnovationNumber = -1;
-        for (int i = 0; i < genes.size(); i++) {
-            if (genes.get(i).innovationNumber > largestInnovationNumber) {
-                largestInnovationNumber = genes.get(i).innovationNumber;
+        for (Gene gene : genes) {
+            if (gene.innovationNumber > largestInnovationNumber) {
+                largestInnovationNumber = gene.innovationNumber;
             }
         }
         return largestInnovationNumber;
@@ -210,8 +210,8 @@ class Genome {
         int maxGenes = 0;
         int[] numberOfNodesInLayer = new int[layers];
 
-        for (int i = 0; i < nodes.size(); i++) {
-            numberOfNodesInLayer[nodes.get(i).layer]++;
+        for (Node node : nodes) {
+            numberOfNodesInLayer[node.layer]++;
         }
 
         for (int i = 0; i < layers - 1; i++) {
@@ -276,9 +276,8 @@ class Genome {
             genes.add(new Gene(nodeFrom, nodeTo, App.processing.random(-1, 1)));
             connectNodes();
         } else {
-            //System.out.println("the network is fully connected");
+            // The network is fully connected
             addNode();
-            return;
         }
 
     }

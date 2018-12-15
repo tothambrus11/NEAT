@@ -5,7 +5,7 @@ class Node {
     int layer = 0;
     double sum = 0;
     double value;
-    ArrayList<Gene> outputs = new ArrayList<Gene>();
+    ArrayList<Gene> outputs = new ArrayList<>();
 
     Node(int number_) {
         number = number_;

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 class Population {
     int inputs, outputs, size;
     ArrayList<Genome> genomes, representators;
@@ -8,13 +10,13 @@ class Population {
         inputs = inputs_;
         outputs = outputs_;
         size = size_;
-        genomes = new ArrayList<Genome>();
+        genomes = new ArrayList<>();
         for (int i = 0; i < size_; i++) {
             genomes.add(new Genome(inputs, outputs));
             genomes.get(i).mutate();
         }
-        bestGenome = genomes.get(0).clone();
-        println(size);
+        bestGenome = genomes.get(0).clone_();
+        System.out.println(size);
     }
 
     void naturalSelection() {
@@ -33,14 +35,14 @@ class Population {
     }
 
     void generateSpecies() {
-        species = new ArrayList<ArrayList<Genome>>();
+        species = new ArrayList<>();
         if (representators != null) {
             for (int i = 0; i < representators.size(); i++) {
-                species.add(new ArrayList<Genome>());
+                species.add(new ArrayList<>());
                 species.get(i).add(representators.get(i));
             }
         } else {
-            ArrayList<Genome> temp = new ArrayList<Genome>();
+            ArrayList<Genome> temp = new ArrayList<>();
             temp.add(genomes.get(0));
             species.add(temp);
         }
@@ -63,21 +65,21 @@ class Population {
     void setRepresentators() {
         representators = new ArrayList<Genome>(species.size());
         for (int i = 0; i < species.size(); i++) {
-            representators.set(i, species.get(i).get(int(random(species.get(i).size()))))
+            representators.set(i, species.get(i).get((int) App.processing.random(species.get(i).size())));
         }
     }
 
     void test() {
         for (int i = 0; i < size; i++) {
             genomes.get(i).calculateFitness();
-            println(genomes.get(i).fitness);
+            System.out.println(genomes.get(i).fitness);
         }
     }
 
     void setBestGenome() {
         for (int i = 0; i < size; i++) {
             if (genomes.get(i).fitness > bestGenome.fitness) {
-                bestGenome = genomes.get(i).clone();
+                bestGenome = genomes.get(i).clone_();
             }
         }
     }

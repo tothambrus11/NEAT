@@ -1,8 +1,10 @@
+import java.util.ArrayList;
+
 class Node {
     int number;
     int layer = 0;
-    float sum = 0;
-    float value;
+    double sum = 0;
+    double value;
     ArrayList<Gene> outputs = new ArrayList<Gene>();
 
     Node(int number_) {
@@ -13,9 +15,9 @@ class Node {
         if (layer > 0) {
             value = function(sum);
         }
-        for (int i = 0; i < outputs.size(); i++) {
-            if (outputs.get(i).enabled) {
-                genome.getNode(outputs.get(i).to).sum += outputs.get(i).weight * value;
+        for (Gene output : outputs) {
+            if (output.enabled) {
+                genome.getNode(output.to).sum += output.weight * value;
             }
         }
     }
@@ -29,8 +31,8 @@ class Node {
             }
         }
         if (node.layer > layer) {
-            for (int i = 0; i < outputs.size(); i++) {
-                if (outputs.get(i).to == node.number) {
+            for (Gene output : outputs) {
+                if (output.to == node.number) {
                     return true;
                 }
             }
@@ -38,15 +40,15 @@ class Node {
         return false;
     }
 
-    float function(float x) {
+    double function(double x) {
         //return (2.0*x)/(abs(2.0*x)+1)+0.1*x;
         //return atan(x);
         if (x > 0) return x;
-        return 0.15 * x;
+        return 0.15f * x;
         //return (2.0*x)/(1+abs(x))+0.2*abs(x)*x/(abs(x)+1);
     }
 
-    Node clone() {
+    Node clone_() {
         Node clone = new Node(number);
         clone.layer = layer;
         return clone;

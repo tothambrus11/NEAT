@@ -11,10 +11,7 @@ public class App extends PApplet {
     static ArrayList<Integer> innovationIn;
     static ArrayList<Integer> innovationOut;
     static int innovationCount = 0;
-
-    static float weightMin, weightMax;
-    static float c1, c2, c3, threshold;
-    static float weightMaxSize, nodeMaxSize;
+    static float weightMin, weightMax, c1, c2, c3, weightMaxSize, nodeMaxSize, threshold;
     static Genome g1, g2;
 
     static Population pop;
@@ -29,6 +26,8 @@ public class App extends PApplet {
 
 
     public void setup() {
+        processing = this;
+
         innovationIn = new ArrayList<>();
         innovationOut = new ArrayList<>();
         size(800, 400);
@@ -85,6 +84,7 @@ public class App extends PApplet {
         background(255);
         //println(g1.feedForward(new float[]{1, 1}));
         //g2=g2.crossover(g1);
+
     }
 
     public void draw() {
@@ -93,9 +93,9 @@ public class App extends PApplet {
         //g1.printGenome();
         //g2.printGenome();
         g1.drawGenome(0, 0, 400, 200, nodeMaxSize, weightMaxSize);
-        pop.genomes.get(0).drawGenome1(400, 0, 800, 200, nodeMaxSize, weightMaxSize);
+        pop.genomes.get(1).drawGenome(400, 0, 800, 200, nodeMaxSize, weightMaxSize);
         pop.genomes.get(1).drawGenome1(0, 200, 400, 400, nodeMaxSize, weightMaxSize);
-        pop.genomes.get(2).drawGenome1(400, 200, 800, 400, nodeMaxSize, weightMaxSize);
+        pop.genomes.get(1).drawGenome2(400, 200, 800, 400, nodeMaxSize, weightMaxSize);
         if (random(1) < 0.03) {
             pop.genomes.set(0, g1.crossover(pop.genomes.get(0)));
         }

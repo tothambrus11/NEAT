@@ -38,9 +38,9 @@ public class App extends PApplet {
         c1 = 1;
         c2 = 1;
         c3 = 0.4f;
-        threshold = 3;
+        threshold = 10;
 
-        pop = new Population(2, 1, 5);
+        pop = new Population(2, 1, 500);
 
         g1 = new Genome(2, 1);
         g1.nodes.add(new Node(4));
@@ -76,7 +76,7 @@ public class App extends PApplet {
         g2.genes.add(new Gene(3, 4, -1));
         g2.genes.add(new Gene(0, 5, -1));
         g2.connectNodes();
-        frameRate(30);
+        frameRate(100);
         background(255);
         //println(g1.feedForward(new float[]{1, 1}));
         //g2=g2.crossover(g1);
@@ -85,20 +85,27 @@ public class App extends PApplet {
 
     public void draw() {
         background(255);
+        //pop.naturalSelection();
+        g1.drawGenome1(0, 0, 800, 400, nodeMaxSize, weightMaxSize);
+        g1.mutate();
+        g1.calculateFitness();
+        println(g1.fitness);
+        //println(pop.bestGenome.fitness);
+        //background(255);
         //g2.mutate();
-        Genome child=g2.crossover(g1);
-        g2.mutate();
+        //Genome ch=g2.crossover(g1);
+        //g2.mutate();
         //child.drawGenome1(0, 0, 800, 400, nodeMaxSize, weightMaxSize);
         //g1.printGenome();
         //g2.printGenome();
         //pop.genomes.get(1).drawGenome(0, 0, 400, 200, nodeMaxSize, weightMaxSize);
-        pop.genomes.get(1).drawGenome1(400, 0, 800, 200, nodeMaxSize, weightMaxSize);
+        //pop.genomes.get(1).drawGenome1(400, 0, 800, 200, nodeMaxSize, weightMaxSize);
         //pop.genomes.get(1).drawGenome2(0, 200, 400, 400, nodeMaxSize, weightMaxSize);
         //pop.genomes.get(1).drawGenome3(0, 0, 800, 400, nodeMaxSize, weightMaxSize);
         //if (random(1) < 0.03) {
         //    pop.genomes.set(0, g1.crossover(pop.genomes.get(0)));
         //}
-        pop.mutate();
+        //pop.mutate();
         //pop.genomes.get(1).addNode();
         //pop.generateSpecies();
         //for (int i = 0; i < pop.species.size(); i++) {

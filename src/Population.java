@@ -15,21 +15,22 @@ class Population {
             genomes.add(new Genome(inputs, outputs));
             genomes.get(i).mutate();
         }
-        bestGenome = genomes.get(0).clone_();
+        bestGenome = genomes.get(0);
+        bestGenome.calculateFitness();
     }
 
     void naturalSelection() {
         generateSpecies();
-        test();
+        calculateFitness();
         setBestGenome();
+        modifyFitness();
         crossover();
         mutate();
-        setRepresentators();
     }
 
     void mutate() {
-        for (int i = 0; i < size; i++) {
-            genomes.get(i).mutate();
+        for (Genome genome : genomes) {
+            genome.mutate();
         }
     }
 
@@ -45,41 +46,88 @@ class Population {
             temp.add(genomes.get(0));
             species.add(temp);
         }
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < species.size(); j++) {
-                if (genomes.get(i).isSimilarTo(species.get(j).get(0), size)) {
-                    species.get(j).add(genomes.get(i));
+        for (Genome genome : genomes) {
+            for (int i = 0; i < species.size(); i++) {
+                if (genome.isSimilarTo(species.get(i).get(0), size)) {
+                    species.get(i).add(genome);
                     break;
-                } else if (j == species.size() - 1) {
-                    species.add(new ArrayList<Genome>());
-                    species.get(species.size() - 1).add(genomes.get(i));
+                } else if (i == species.size() - 1) {
+                    species.add(new ArrayList<>());
+                    species.get(species.size() - 1).add(genome);
                 }
             }
         }
     }
 
+    /**
+     * Minden faj legjobbját örökíti (új genomes-ba)
+     * A maradék helyet feltölti a ranom krosszoverálgatással
+     */
     void crossover() {
-    }
+        genomes.clear();
+        representators = new ArrayList<>();
+        for (ArrayList<Genome> genomesInSpecies : species) {
+            representators.add(genomesInSpecies.get((int) App.processing.random(genomesInSpecies.size())));
+            Genome bestGenomeInCurrentSpecies = genomesInSpecies.get(0);
+            for (Genome genome : genomesInSpecies) {
+                if (bestGenomeInCurrentSpecies.fitness < genome.fitness) {
+                    bestGenomeInCurrentSpecies = genome;
+                }
+            }
+            genomes.add(bestGenomeInCurrentSpecies);
+        }
 
-    void setRepresentators() {
-        representators = new ArrayList<Genome>(species.size());
-        for (int i = 0; i < species.size(); i++) {
-            representators.set(i, species.get(i).get((int) App.processing.random(species.get(i).size())));
+        while(genomes.size()<size){
+            Genome parent1=getRandomGenome();
+            Genome parent2=getRandomGenome();
+            if(parent1.fitness>parent2.fitness) {
+                genomes.add(parent1.crossover(parent2));
+            } else {
+                genomes.add(parent2.crossover(parent1));
+            }
         }
     }
 
-    void test() {
-        for (int i = 0; i < size; i++) {
-            genomes.get(i).calculateFitness();
-            System.out.println(genomes.get(i).fitness);
+    void modifyFitness() {
+        for (ArrayList<Genome> genomesInSpecies : species) {
+            for (Genome genome : genomesInSpecies) {
+                genome.fitness /= genomesInSpecies.size();
+            }
+        }
+    }
+
+    void calculateFitness() {
+        for (Genome genome : genomes) {
+            genome.calculateFitness();
         }
     }
 
     void setBestGenome() {
-        for (int i = 0; i < size; i++) {
-            if (genomes.get(i).fitness > bestGenome.fitness) {
-                bestGenome = genomes.get(i).clone_();
+        for (Genome genome : genomes) {
+            if (genome.fitness > bestGenome.fitness) {
+                bestGenome = genome;
             }
         }
+    }
+
+    Genome getRandomGenome(){
+        double fitnessSum = 0;
+        for(ArrayList<Genome> genomesInSpecies : species){
+            for (Genome genome:genomesInSpecies ) {
+                fitnessSum+=genome.fitness;
+            }
+        }
+
+        double currentSum=species.get(0).get(0).fitness, randomIndex=App.processing.random((float)fitnessSum);
+        int i=0,j=0;
+        while(currentSum<randomIndex) {
+            j++;
+            if(j==species.get(i).size()){
+                i++;
+                j=0;
+            }
+            currentSum+=species.get(i).get(j).fitness;
+        }
+        return species.get(i).get(j);
     }
 }

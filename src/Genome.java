@@ -35,7 +35,6 @@ class Genome {
         this.outputs = outputs;
         this.biasNode = biasNode;
         this.layers = layers;
-        this.fitness = fitness;
     }
 
     Genome crossover(Genome partner) {
@@ -478,7 +477,7 @@ class Genome {
                     nodePositions.add(new PVector((float) x2, (float) (y1 + (((double) i * (y2 - y1)) / (outputs - 1)))));
                     nodeNumbers.add(i);
                 }
-                nodePositions.add(new PVector((float) x1, (float) ((y2 + y1) / 2.0f)));
+                nodePositions.add(new PVector((float) x1, (float) ((y2 + y1) / 2.0)));
                 nodeNumbers.add(biasNode);
             }
         } else {
@@ -686,6 +685,6 @@ class Genome {
         sum += Math.abs(feedForward(new double[]{0.0, 1.0})[0] - 1);
         sum += Math.abs(feedForward(new double[]{1.0, 0.0})[0] - 1);
         sum += Math.abs(feedForward(new double[]{1.0, 1.0})[0] - 0);
-        fitness = 4 - sum;
+        fitness = 100.0/sum;
     }
 }

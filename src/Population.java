@@ -16,7 +16,6 @@ class Population {
             genomes.get(i).mutate();
         }
         bestGenome = genomes.get(0).clone_();
-        System.out.println(size);
     }
 
     void naturalSelection() {

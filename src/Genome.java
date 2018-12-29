@@ -8,7 +8,7 @@ class Genome {
     ArrayList<Gene> genes = new ArrayList<>();
     ArrayList<Node> nodes = new ArrayList<>();
     ArrayList<Node> network = new ArrayList<>();
-    int inputs, outputs, biasNode, layers = 2, nodeCount = 0;
+    int inputs, outputs, biasNode, layers = 2;
     double fitness = 0;
 
     Genome(int inputs_, int outputs_) {
@@ -16,29 +16,25 @@ class Genome {
         outputs = outputs_;
 
         for (int i = 0; i < inputs; i++) {
-            nodes.add(new Node(nodeCount));
-            nodeCount++;
+            nodes.add(new Node(nodes.size()));
             nodes.get(i).layer = 0;
         }
 
         for (int i = 0; i < outputs; i++) {
-            nodes.add(new Node(nodeCount));
-            nodeCount++;
+            nodes.add(new Node(nodes.size()));
             nodes.get(inputs + i).layer = 1;
         }
 
-        nodes.add(new Node(nodeCount));
-        biasNode = nodeCount;
-        nodeCount++;
+        nodes.add(new Node(nodes.size()));
+        biasNode = nodes.size() - 1;
         nodes.get(biasNode).layer = 0;
     }
 
-    public Genome(int inputs, int outputs, int biasNode, int layers, int nodeCount, double fitness) {
+    public Genome(int inputs, int outputs, int biasNode, int layers, double fitness) {
         this.inputs = inputs;
         this.outputs = outputs;
         this.biasNode = biasNode;
         this.layers = layers;
-        this.nodeCount = nodeCount;
         this.fitness = fitness;
     }
 
@@ -169,12 +165,8 @@ class Genome {
         return distance(partner, size) < App.threshold;
     }
 
-    /**
-     * Constructor for cloning
-     */
-
     Genome clone_() {
-        return new Genome(inputs, outputs, biasNode, layers, nodeCount, fitness);
+        return new Genome(inputs, outputs, biasNode, layers, fitness);
     }
 
     Node getNode(int number) {
@@ -237,9 +229,8 @@ class Genome {
         }
         genes.get(randomGene).enabled = false;
 
-        int newNodeNumber = nodeCount;
+        int newNodeNumber = nodes.size();
         nodes.add(new Node(newNodeNumber));
-        nodeCount++;
 
         genes.add(new Gene(genes.get(randomGene).from, newNodeNumber, 1));
         nodes.get(newNodeNumber).layer = getNode(genes.get(randomGene).from).layer + 1;
@@ -570,9 +561,50 @@ class Genome {
         y1 += nodeSize;
         y2 -= nodeSize;
 
-        for (Node node : nodes) {
+
+        if (inputs == 0) {
+            if (outputs == 1) {
+                nodePositions.add(new PVector((float) x2, (float) ((y2 + y1) / 2)));
+                nodeNumbers.add(0);
+                nodePositions.add(new PVector((float) x1, (float) (y2 + y1) / 2));
+                nodeNumbers.add(biasNode);
+            } else {
+                for (int i = 0; i < outputs; i++) {
+                    nodePositions.add(new PVector((float) x2, (float) (y1 + (((double) i * (y2 - y1)) / (outputs - 1)))));
+                    nodeNumbers.add(i);
+                }
+                nodePositions.add(new PVector((float) x1, (float) ((y2 + y1) / 2.0f)));
+                nodeNumbers.add(biasNode);
+            }
+        } else {
+            if (outputs == 1) {
+                for (int i = 0; i < inputs; i++) {
+                    nodePositions.add(new PVector((float) x1, (float) (y1 + (float) i * (y2 - y1) / inputs)));
+                    nodeNumbers.add(i);
+                }
+                for (int i = 0; i < outputs; i++) {
+                    nodePositions.add(new PVector((float) x2, (float) (y2 + y1) / 2.0f));
+                    nodeNumbers.add(inputs + i);
+                }
+                nodePositions.add(new PVector((float) x1, (float) y2));
+                nodeNumbers.add(biasNode);
+            } else {
+                for (int i = 0; i < inputs; i++) {
+                    nodePositions.add(new PVector((float) x1, (float) (y1 + (float) i * (y2 - y1) / inputs)));
+                    nodeNumbers.add(i);
+                }
+                for (int i = 0; i < outputs; i++) {
+                    nodePositions.add(new PVector((float) x2, (float) (y1 + (double) i * (y2 - y1) / (outputs - 1))));
+                    nodeNumbers.add(inputs + i);
+                }
+                nodePositions.add(new PVector((float) x1, (float) y2));
+                nodeNumbers.add(biasNode);
+            }
+        }
+
+        for (int i = biasNode + 1; i < nodes.size(); i++) {
             nodePositions.add(new PVector(App.processing.random((float) x1, (float) x2), App.processing.random((float) y1, (float) y2)));
-            nodeNumbers.add(node.number);
+            nodeNumbers.add(nodes.get(i).number);
         }
 
         for (Gene gene : genes) {

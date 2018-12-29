@@ -8,7 +8,7 @@ class Genome {
     ArrayList<Gene> genes = new ArrayList<>();
     ArrayList<Node> nodes = new ArrayList<>();
     ArrayList<Node> network = new ArrayList<>();
-    int inputs, outputs, biasNode, layers = 2, nodeCount = 0;
+    int inputs, outputs, biasNode, layers = 2, nodeCount = 0, maximumInnovationNumbert;
     double fitness = 0;
 
     Genome(int inputs_, int outputs_) {
@@ -53,15 +53,17 @@ class Genome {
             int matchingGene = matchingGene(partner, genes.get(i).innovationNumber);
             boolean enabled = true;
             if (matchingGene != -1) {
-                if (!genes.get(i).enabled || !partner.genes.get(matchingGene).enabled) {
+                /*if (!genes.get(i).enabled || !partner.genes.get(matchingGene).enabled) {
                     if (App.processing.random(1) < 0.75) {
                         enabled = false;
                     }
-                }
+                }*/
                 if (App.processing.random(1) < 0.5) {
                     child.genes.add(genes.get(i).clone_());
+                    enabled=genes.get(i).enabled;
                 } else {
                     child.genes.add(partner.genes.get(matchingGene).clone_());
+                    enabled=partner.genes.get(matchingGene).enabled;
                 }
             } else {
                 child.genes.add(genes.get(i).clone_());
@@ -71,7 +73,7 @@ class Genome {
         }
         connectNodes();
 
-        for (int i = 0; i < partner.genes.size(); i++) {
+        /*for (int i = 0; i < partner.genes.size(); i++) {
             if (matchingGene(this, partner.genes.get(i).innovationNumber) == -1) {
                 if (partner.genes.get(i).from < nodes.size() && partner.genes.get(i).to < nodes.size()) {
                     if (getNode(partner.genes.get(i).from).layer < getNode(partner.genes.get(i).to).layer) {
@@ -81,7 +83,7 @@ class Genome {
                     }
                 }
             }
-        }
+        }*/
 
         child.connectNodes();
         return child;
@@ -168,10 +170,6 @@ class Genome {
     boolean isSimilarTo(Genome partner, int size) {
         return distance(partner, size) < App.threshold;
     }
-
-    /**
-     * Constructor for cloning
-     */
 
     Genome clone_() {
         return new Genome(inputs, outputs, biasNode, layers, nodeCount, fitness);
@@ -304,6 +302,10 @@ class Genome {
         }
     }
 
+    void calculateMaximumInnovationNumbert() {
+
+    }
+
     void drawGenome(double x1, double y1, double x2, double y2, double nodeSize, double weightSize) {
         ArrayList<ArrayList<Node>> allNodes = new ArrayList<>();
         ArrayList<PVector> nodePositions = new ArrayList<>();
@@ -341,7 +343,7 @@ class Genome {
                     App.processing.stroke(255, 0, 0);
                     App.processing.fill(255, 0, 0);
                 }
-                double size = weightSize * Math.pow(gene.weight, 2) / (Math.pow(gene.weight, 2) + 1);
+                double size = weightSize * Math.pow(gene.weight/2, 2) / (Math.pow(gene.weight/2, 2) + 1);
                 App.processing.strokeWeight((float) size);
                 App.processing.line(fromPos.x, fromPos.y, toPos.x, toPos.y);
                 PVector dotPos = toPos.copy().sub(toPos.copy().sub(fromPos).div(4));
@@ -444,7 +446,7 @@ class Genome {
                     App.processing.stroke(255, 0, 0);
                     App.processing.fill(255, 0, 0);
                 }
-                double size = weightSize * Math.pow(gene.weight, 2) / (Math.pow(gene.weight, 2) + 1);
+                double size = weightSize * Math.pow(gene.weight/2, 2) / (Math.pow(gene.weight/2, 2) + 1);
                 App.processing.strokeWeight((float) size);
                 App.processing.line(fromPos.x, fromPos.y, toPos.x, toPos.y);
                 PVector dotPos = toPos.copy().sub(toPos.copy().sub(fromPos).div(4));
@@ -540,7 +542,7 @@ class Genome {
                     App.processing.stroke(255, 0, 0);
                     App.processing.fill(255, 0, 0);
                 }
-                double size = weightSize * Math.pow(gene.weight, 2) / (Math.pow(gene.weight, 2) + 1);
+                double size = weightSize * Math.pow(gene.weight/2, 2) / (Math.pow(gene.weight/2, 2) + 1);
                 App.processing.strokeWeight((float) size);
                 App.processing.line(fromPos.x, fromPos.y, toPos.x, toPos.y);
                 PVector dotPos = toPos.copy().sub(toPos.copy().sub(fromPos).div(4));
@@ -588,7 +590,7 @@ class Genome {
                     App.processing.stroke(255, 0, 0);
                     App.processing.fill(255, 0, 0);
                 }
-                double size = weightSize * Math.pow(gene.weight, 2) / (Math.pow(gene.weight, 2) + 1);
+                double size = weightSize * Math.pow(gene.weight/2, 2) / (Math.pow(gene.weight/2, 2) + 1);
                 App.processing.strokeWeight((float) size);
                 App.processing.line(fromPos.x, fromPos.y, toPos.x, toPos.y);
                 PVector dotPos = toPos.copy().sub(toPos.copy().sub(fromPos).div(4));

@@ -18,21 +18,21 @@ class Population {
         }
         bestGenome = genomes.get(0);
         bestGenome.calculateFitness();
-        bestFitness=bestGenome.fitness;
+        bestFitness = bestGenome.fitness;
     }
 
     void naturalSelection() {
-        /*sortToSpecies();
+        //sortToSpecies();
         calculateFitness();
         setBestGenome();
-        modifyFitness();
-        reproduction();*/
+        //modifyFitness();
+        //reproduction();
         mutateAll();
     }
 
     void mutateAll() {
         for (Genome genome : genomes) {
-            genome.mutate();
+            genome.addNode();
         }
     }
 
@@ -61,10 +61,6 @@ class Population {
         }
     }
 
-    /**
-     * Minden faj legjobbját örökíti (új genomes-ba)
-     * A maradék helyet feltölti a ranom krosszoverálgatással
-     */
     void reproduction() {
         genomes.clear();
         representators = new ArrayList<>();
@@ -106,11 +102,12 @@ class Population {
 
     void setBestGenome() {
         for (Genome genome : genomes) {
-            if (genome.fitness > bestGenome.fitness) {
+            if (genome.fitness > bestFitness) {
                 bestGenome = genome;
                 bestFitness = genome.fitness;
             }
         }
+        App.processing.println("new best");
     }
 
     void drawPopulation() {

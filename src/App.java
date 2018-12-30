@@ -75,7 +75,7 @@ public class App extends PApplet {
         g2.genes.add(new Gene(3, 4, -1));
         g2.genes.add(new Gene(0, 5, -1));
         g2.connectNodes();*/
-        frameRate(100);
+        frameRate(1);
         background(255);
         //println(g1.feedForward(new float[]{1, 1}));
         //g2=g2.reproduction(g1);
@@ -84,8 +84,11 @@ public class App extends PApplet {
 
     public void draw() {
         background(255);
-        pop.naturalSelection();pop.drawPopulation();
-        //pop.bestGenome.drawGenome1(0, 0, 800, 400, nodeMaxSize, weightMaxSize);
+        pop.drawPopulation();
+        println(pop.bestFitness);
+        //pop.bestGenome.drawGenome1(350, 0, 700, 800/3, nodeMaxSize, weightMaxSize);
+        pop.naturalSelection();
+        //println(frameRate);
         //g1.mutateAll();
         //g1.calculateFitness();
         //println(pop.bestGenome.fitness);

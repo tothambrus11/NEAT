@@ -5,6 +5,7 @@ class Population {
     ArrayList<Genome> genomes, representators;
     ArrayList<ArrayList<Genome>> species;
     Genome bestGenome;
+    double bestFitness;
 
     Population(int inputs_, int outputs_, int size_) {
         inputs = inputs_;
@@ -17,24 +18,25 @@ class Population {
         }
         bestGenome = genomes.get(0);
         bestGenome.calculateFitness();
+        bestFitness=bestGenome.fitness;
     }
 
     void naturalSelection() {
-        generateSpecies();
+        /*sortToSpecies();
         calculateFitness();
         setBestGenome();
         modifyFitness();
-        crossover();
-        mutate();
+        reproduction();*/
+        mutateAll();
     }
 
-    void mutate() {
+    void mutateAll() {
         for (Genome genome : genomes) {
             genome.mutate();
         }
     }
 
-    void generateSpecies() {
+    void sortToSpecies() {
         species = new ArrayList<>();
         if (representators != null) {
             for (int i = 0; i < representators.size(); i++) {
@@ -63,7 +65,7 @@ class Population {
      * Minden faj legjobbját örökíti (új genomes-ba)
      * A maradék helyet feltölti a ranom krosszoverálgatással
      */
-    void crossover() {
+    void reproduction() {
         genomes.clear();
         representators = new ArrayList<>();
         for (ArrayList<Genome> genomesInSpecies : species) {
@@ -77,10 +79,10 @@ class Population {
             genomes.add(bestGenomeInCurrentSpecies);
         }
 
-        while(genomes.size()<size){
-            Genome parent1=getRandomGenome();
-            Genome parent2=getRandomGenome();
-            if(parent1.fitness>parent2.fitness) {
+        while (genomes.size() < size) {
+            Genome parent1 = getRandomGenome();
+            Genome parent2 = getRandomGenome();
+            if (parent1.fitness > parent2.fitness) {
                 genomes.add(parent1.crossover(parent2));
             } else {
                 genomes.add(parent2.crossover(parent1));
@@ -89,11 +91,11 @@ class Population {
     }
 
     void modifyFitness() {
-        for (ArrayList<Genome> genomesInSpecies : species) {
+        /*for (ArrayList<Genome> genomesInSpecies : species) {
             for (Genome genome : genomesInSpecies) {
                 genome.fitness /= genomesInSpecies.size();
             }
-        }
+        }*/
     }
 
     void calculateFitness() {
@@ -106,27 +108,36 @@ class Population {
         for (Genome genome : genomes) {
             if (genome.fitness > bestGenome.fitness) {
                 bestGenome = genome;
+                bestFitness = genome.fitness;
             }
         }
     }
 
-    Genome getRandomGenome(){
+    void drawPopulation() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 3; j++) {
+                genomes.get(3 * i + j).drawGenome1(App.processing.width / 4 * i, App.processing.height / 3 * j, App.processing.width / 4 * (i + 1), App.processing.height / 3 * (j + 1), App.nodeMaxSize, App.weightMaxSize);
+            }
+        }
+    }
+
+    Genome getRandomGenome() {
         double fitnessSum = 0;
-        for(ArrayList<Genome> genomesInSpecies : species){
-            for (Genome genome:genomesInSpecies ) {
-                fitnessSum+=genome.fitness;
+        for (ArrayList<Genome> genomesInSpecies : species) {
+            for (Genome genome : genomesInSpecies) {
+                fitnessSum += genome.fitness;
             }
         }
 
-        double currentSum=species.get(0).get(0).fitness, randomIndex=App.processing.random((float)fitnessSum);
-        int i=0,j=0;
-        while(currentSum<randomIndex) {
+        double currentSum = species.get(0).get(0).fitness, randomIndex = App.processing.random((float) fitnessSum);
+        int i = 0, j = 0;
+        while (currentSum < randomIndex) {
             j++;
-            if(j==species.get(i).size()){
+            if (j == species.get(i).size()) {
                 i++;
-                j=0;
+                j = 0;
             }
-            currentSum+=species.get(i).get(j).fitness;
+            currentSum += species.get(i).get(j).fitness;
         }
         return species.get(i).get(j);
     }

@@ -685,6 +685,6 @@ class Genome {
         sum += Math.abs(feedForward(new double[]{0.0, 1.0})[0] - 1);
         sum += Math.abs(feedForward(new double[]{1.0, 0.0})[0] - 1);
         sum += Math.abs(feedForward(new double[]{1.0, 1.0})[0] - 0);
-        fitness = 100.0/sum;
+        fitness = 10.0 / sum;
     }
 }

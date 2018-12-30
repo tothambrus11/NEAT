@@ -42,9 +42,9 @@ class Node {
 
     double function(double x) {
         //return (2.0*x)/(abs(2.0*x)+1)+0.1*x;
-        return App.processing.atan((float)x);
-        /*if (x > 0) return x;
-        return 0.15f * x;*/
+        //return App.processing.atan((float)x);
+        if (x > 0) return x;
+        return 0.15f * x;
         //return (2.0*x)/(1+abs(x))+0.2*abs(x)*x/(abs(x)+1);
     }
 

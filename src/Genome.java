@@ -448,7 +448,7 @@ class Genome {
         for (int i = 0; i < nodePositions.size(); i++) {
             App.processing.stroke(255);
             App.processing.strokeWeight(1);
-            App.processing.fill(0);
+            App.processing.fill(30);
             App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
             App.processing.fill(255);
             App.processing.textSize((float) (nodeSize / 2));

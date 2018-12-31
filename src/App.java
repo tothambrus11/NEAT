@@ -30,7 +30,7 @@ public class App extends PApplet {
         innovationIn = new ArrayList<>();
         innovationOut = new ArrayList<>();
         weightMaxSize = 4;
-        nodeMaxSize = 20;
+        nodeMaxSize = 25;
 
         weightMin = -100;
         weightMax = 100;
@@ -83,7 +83,7 @@ public class App extends PApplet {
     }
 
     public void draw() {
-        background(0);
+        background(20);
         pop.drawPopulation();
         println(frameCount);
         //pop.bestGenome.drawGenome1(350, 0, 700, 800/3, nodeMaxSize, weightMaxSize);

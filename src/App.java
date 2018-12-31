@@ -11,7 +11,7 @@ public class App extends PApplet {
     static ArrayList<Integer> innovationIn;
     static ArrayList<Integer> innovationOut;
     static int innovationCount = 0;
-    static float weightMin, weightMax, c1, c2, c3, weightMaxSize, nodeMaxSize, threshold;
+    static double weightMin, weightMax, c1, c2, c3, weightMaxSize, nodeMaxSize, threshold;
     //static Genome g1, g2;
 
     static Population pop;
@@ -77,7 +77,7 @@ public class App extends PApplet {
         g2.connectNodes();*/
         frameRate(1);
         background(255);
-        //println(g1.feedForward(new float[]{1, 1}));
+        //println(g1.feedForward(new double[]{1, 1}));
         //g2=g2.reproduction(g1);
 
     }
@@ -118,6 +118,6 @@ public class App extends PApplet {
         //println(pop.species.size());
         //println(pop.genomes.get(0).distance(pop.genomes.get(1), pop.size));
         //println(g2.distance(g1));
-        //println(g1.feedForward(new float[]{1, 1}));
+        println(pop.bestGenome.feedForward(new double[]{1, 1}));
     }
 }

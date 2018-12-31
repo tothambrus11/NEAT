@@ -30,7 +30,7 @@ public class App extends PApplet {
         innovationIn = new ArrayList<>();
         innovationOut = new ArrayList<>();
         weightMaxSize = 4;
-        nodeMaxSize = 15;
+        nodeMaxSize = 20;
 
         weightMin = -100;
         weightMax = 100;
@@ -39,7 +39,7 @@ public class App extends PApplet {
         c3 = 0.4f;
         threshold = 10;
 
-        pop = new Population(2, 1, 12);
+        pop = new Population(2, 1, 500);
 /*
         g1 = new Genome(2, 1);
         g1.nodes.add(new Node(4));
@@ -75,7 +75,7 @@ public class App extends PApplet {
         g2.genes.add(new Gene(3, 4, -1));
         g2.genes.add(new Gene(0, 5, -1));
         g2.connectNodes();*/
-        frameRate(1);
+        frameRate(20);
         background(255);
         //println(g1.feedForward(new double[]{1, 1}));
         //g2=g2.reproduction(g1);
@@ -83,11 +83,12 @@ public class App extends PApplet {
     }
 
     public void draw() {
-        background(255);
+        background(0);
         pop.drawPopulation();
-        println(pop.bestFitness);
+        println(frameCount);
         //pop.bestGenome.drawGenome1(350, 0, 700, 800/3, nodeMaxSize, weightMaxSize);
         pop.naturalSelection();
+        println(pop.bestFitness);
         //println(frameRate);
         //g1.mutateAll();
         //g1.calculateFitness();
@@ -118,6 +119,12 @@ public class App extends PApplet {
         //println(pop.species.size());
         //println(pop.genomes.get(0).distance(pop.genomes.get(1), pop.size));
         //println(g2.distance(g1));
-        println(pop.bestGenome.feedForward(new double[]{1, 1}));
+        //println(pop.bestGenome.feedForward(new double[]{0, 0}));
+        //pop.bestGenome.printGenome();
+        /*double sum = 0;
+        for (Gene gene : pop.bestGenome.genes) {
+            sum += gene.weight;
+        }
+        println(sum);*/
     }
 }

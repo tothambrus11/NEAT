@@ -137,8 +137,8 @@ class Genome {
                 }
             }
         }
-        if (size <= 20) return App.c1 * excessCount + App.c2 * disjointCount + App.c3 * weightDifference;
-        return App.c1 * excessCount + App.c2 * disjointCount + App.c3 * weightDifference;
+        if (size <= 20) return App.c1 * excessCount + App.c2 * disjointCount + App.c3 * weightDifference / machingCount;
+        return App.c1 * excessCount + App.c2 * disjointCount + App.c3 * weightDifference / machingCount;
     }
 
     void mutate() {
@@ -327,8 +327,8 @@ class Genome {
                 fromPos = nodePositions.get(nodeNumbers.indexOf(gene.from));
                 toPos = nodePositions.get(nodeNumbers.indexOf(gene.to));
                 if (gene.weight >= 0) {
-                    App.processing.stroke(0, 255, 0);
-                    App.processing.fill(0, 255, 0);
+                    App.processing.stroke(0, 0, 255);
+                    App.processing.fill(0, 0, 255);
                 } else {
                     App.processing.stroke(255, 0, 0);
                     App.processing.fill(255, 0, 0);
@@ -338,17 +338,17 @@ class Genome {
                 App.processing.line(fromPos.x, fromPos.y, toPos.x, toPos.y);
                 PVector dotPos = toPos.copy().sub(toPos.copy().sub(fromPos).div(4));
                 App.processing.strokeWeight(0);
-                App.processing.ellipse(dotPos.x, dotPos.y, (float) (3 * size), (float) (3 * size));
+                App.processing.ellipse(dotPos.x, dotPos.y, (float) (size * 4), (float) (size * 4));
             }
         }
 
         for (int i = 0; i < nodePositions.size(); i++) {
-            App.processing.fill(255);
-            App.processing.stroke(0);
+            App.processing.stroke(255);
             App.processing.strokeWeight(1);
-            App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
-            App.processing.textSize((float) (nodeSize / 2));
             App.processing.fill(0);
+            App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
+            App.processing.fill(255);
+            App.processing.textSize((float) (nodeSize / 2));
             App.processing.textAlign(CENTER, CENTER);
             App.processing.text(nodeNumbers.get(i), nodePositions.get(i).x, nodePositions.get(i).y);
         }
@@ -430,8 +430,8 @@ class Genome {
                 fromPos = nodePositions.get(nodeNumbers.indexOf(gene.from));
                 toPos = nodePositions.get(nodeNumbers.indexOf(gene.to));
                 if (gene.weight >= 0) {
-                    App.processing.stroke(0, 255, 0);
-                    App.processing.fill(0, 255, 0);
+                    App.processing.stroke(0, 0, 255);
+                    App.processing.fill(0, 0, 255);
                 } else {
                     App.processing.stroke(255, 0, 0);
                     App.processing.fill(255, 0, 0);
@@ -441,17 +441,17 @@ class Genome {
                 App.processing.line(fromPos.x, fromPos.y, toPos.x, toPos.y);
                 PVector dotPos = toPos.copy().sub(toPos.copy().sub(fromPos).div(4));
                 App.processing.strokeWeight(0);
-                App.processing.ellipse(dotPos.x, dotPos.y, (float) (3 * size), (float) (3 * size));
+                App.processing.ellipse(dotPos.x, dotPos.y, (float) (size * 4), (float) (size * 4));
             }
         }
 
         for (int i = 0; i < nodePositions.size(); i++) {
-            App.processing.fill(255);
-            App.processing.stroke(0);
+            App.processing.stroke(255);
             App.processing.strokeWeight(1);
-            App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
-            App.processing.textSize((float) nodeSize / 2);
             App.processing.fill(0);
+            App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
+            App.processing.fill(255);
+            App.processing.textSize((float) (nodeSize / 2));
             App.processing.textAlign(CENTER, CENTER);
             App.processing.text(nodeNumbers.get(i), nodePositions.get(i).x, nodePositions.get(i).y);
         }
@@ -526,8 +526,8 @@ class Genome {
                 fromPos = nodePositions.get(nodeNumbers.indexOf(gene.from));
                 toPos = nodePositions.get(nodeNumbers.indexOf(gene.to));
                 if (gene.weight >= 0) {
-                    App.processing.stroke(0, 255, 0);
-                    App.processing.fill(0, 255, 0);
+                    App.processing.stroke(0, 0, 255);
+                    App.processing.fill(0, 0, 255);
                 } else {
                     App.processing.stroke(255, 0, 0);
                     App.processing.fill(255, 0, 0);
@@ -537,17 +537,17 @@ class Genome {
                 App.processing.line(fromPos.x, fromPos.y, toPos.x, toPos.y);
                 PVector dotPos = toPos.copy().sub(toPos.copy().sub(fromPos).div(4));
                 App.processing.strokeWeight(0);
-                App.processing.ellipse(dotPos.x, dotPos.y, (float) (3 * size), (float) (3 * size));
+                App.processing.ellipse(dotPos.x, dotPos.y, (float) (size * 4), (float) (size * 4));
             }
         }
 
         for (int i = 0; i < nodePositions.size(); i++) {
-            App.processing.fill(255);
-            App.processing.stroke(0);
+            App.processing.stroke(255);
             App.processing.strokeWeight(1);
-            App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
-            App.processing.textSize((float) (nodeSize / 2));
             App.processing.fill(0);
+            App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
+            App.processing.fill(255);
+            App.processing.textSize((float) (nodeSize / 2));
             App.processing.textAlign(CENTER, CENTER);
             App.processing.text(nodeNumbers.get(i), nodePositions.get(i).x, nodePositions.get(i).y);
         }
@@ -615,8 +615,8 @@ class Genome {
                 fromPos = nodePositions.get(nodeNumbers.indexOf(gene.from));
                 toPos = nodePositions.get(nodeNumbers.indexOf(gene.to));
                 if (gene.weight >= 0) {
-                    App.processing.stroke(0, 255, 0);
-                    App.processing.fill(0, 255, 0);
+                    App.processing.stroke(0, 0, 255);
+                    App.processing.fill(0, 0, 255);
                 } else {
                     App.processing.stroke(255, 0, 0);
                     App.processing.fill(255, 0, 0);
@@ -626,17 +626,17 @@ class Genome {
                 App.processing.line(fromPos.x, fromPos.y, toPos.x, toPos.y);
                 PVector dotPos = toPos.copy().sub(toPos.copy().sub(fromPos).div(4));
                 App.processing.strokeWeight(0);
-                App.processing.ellipse(dotPos.x, dotPos.y, (float) (3 * size), (float) (3 * size));
+                App.processing.ellipse(dotPos.x, dotPos.y, (float) (size * 4), (float) (size * 4));
             }
         }
 
         for (int i = 0; i < nodePositions.size(); i++) {
-            App.processing.fill(255);
-            App.processing.stroke(0);
+            App.processing.stroke(255);
             App.processing.strokeWeight(1);
-            App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
-            App.processing.textSize((float) (nodeSize / 2));
             App.processing.fill(0);
+            App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
+            App.processing.fill(255);
+            App.processing.textSize((float) (nodeSize / 2));
             App.processing.textAlign(CENTER, CENTER);
             App.processing.text(nodeNumbers.get(i), nodePositions.get(i).x, nodePositions.get(i).y);
         }
@@ -687,6 +687,10 @@ class Genome {
         sum += Math.abs(feedForward(new double[]{0.0, 1.0})[0] - 1);
         sum += Math.abs(feedForward(new double[]{1.0, 0.0})[0] - 1);
         sum += Math.abs(feedForward(new double[]{1.0, 1.0})[0] - 0);
-        fitness = nodes.size();//10.0 / sum;
+        sum = 0;
+        for (Gene gene : genes) {
+            sum += gene.weight;
+        }
+        fitness = Math.abs(10.0 / (21.5 - sum));//10.0 / sum;
     }
 }

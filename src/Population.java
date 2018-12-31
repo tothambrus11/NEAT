@@ -22,17 +22,17 @@ class Population {
     }
 
     void naturalSelection() {
-        //sortToSpecies();
+        sortToSpecies();
         calculateFitness();
         setBestGenome();
-        //modifyFitness();
-        //reproduction();
+        modifyFitness();
+        reproduction();
         mutateAll();
     }
 
     void mutateAll() {
         for (Genome genome : genomes) {
-            genome.addNode();
+            genome.mutate();
         }
     }
 
@@ -107,7 +107,7 @@ class Population {
                 bestFitness = genome.fitness;
             }
         }
-        App.processing.println("new best");
+        //App.processing.println("new best");
     }
 
     void drawPopulation() {

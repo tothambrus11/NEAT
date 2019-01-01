@@ -11,9 +11,9 @@ class Genome {
     int inputs, outputs, biasNode, layers = 2;
     double fitness = 0;
 
-    Genome(int inputs_, int outputs_) {
-        inputs = inputs_;
-        outputs = outputs_;
+    Genome(int inputs, int outputs) {
+        this.inputs = inputs;
+        this.outputs = outputs;
 
         for (int i = 0; i < inputs; i++) {
             nodes.add(new Node(nodes.size()));
@@ -30,15 +30,28 @@ class Genome {
         nodes.get(biasNode).layer = 0;
     }
 
-    public Genome(int inputs, int outputs, int biasNode, int layers, double fitness) {
+    Genome(int inputs, int outputs, int biasNode, int layers) {
         this.inputs = inputs;
         this.outputs = outputs;
         this.biasNode = biasNode;
         this.layers = layers;
     }
 
+    void calculateFitness() {
+        double sum = 0;
+        sum += Math.abs(feedForward(new double[]{0.0, 0.0})[0] - 0);
+        sum += Math.abs(feedForward(new double[]{0.0, 1.0})[0] - 1);
+        sum += Math.abs(feedForward(new double[]{1.0, 0.0})[0] - 1);
+        sum += Math.abs(feedForward(new double[]{1.0, 1.0})[0] - 0);
+        sum = 0;
+        for (Gene gene : genes) {
+            sum += gene.weight;
+        }
+        fitness = Math.abs(10.0 / (21.5 - sum));//10.0 / sum;
+    }
+
     Genome crossover(Genome partner) {
-        Genome child = clone_();
+        Genome child = new Genome(inputs, outputs, biasNode, layers);
 
         for (int i = 0; i < nodes.size(); i++) {
             child.nodes.add(nodes.get(i).clone_());
@@ -164,10 +177,6 @@ class Genome {
 
     boolean isSimilarTo(Genome partner, int size) {
         return distance(partner, size) < App.threshold;
-    }
-
-    Genome clone_() {
-        return new Genome(inputs, outputs, biasNode, layers, fitness);
     }
 
     Node getNode(int number) {
@@ -681,16 +690,18 @@ class Genome {
         System.out.println();
     }
 
-    void calculateFitness() {
-        double sum = 0;
-        sum += Math.abs(feedForward(new double[]{0.0, 0.0})[0] - 0);
-        sum += Math.abs(feedForward(new double[]{0.0, 1.0})[0] - 1);
-        sum += Math.abs(feedForward(new double[]{1.0, 0.0})[0] - 1);
-        sum += Math.abs(feedForward(new double[]{1.0, 1.0})[0] - 0);
-        sum = 0;
+    Genome clone_() {
+        Genome clone = new Genome(inputs, outputs, biasNode, layers);
+        clone.fitness = fitness;
         for (Gene gene : genes) {
-            sum += gene.weight;
+            clone.genes.add(gene.clone_());
         }
-        fitness = Math.abs(10.0 / (21.5 - sum));//10.0 / sum;
+        for (Node node : nodes) {
+            clone.nodes.add(node.clone_());
+        }
+        for (Node node : network) {
+            clone.network.add(node.clone_());
+        }
+        return clone;
     }
 }

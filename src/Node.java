@@ -52,6 +52,11 @@ class Node {
     Node clone_() {
         Node clone = new Node(number);
         clone.layer = layer;
+        clone.sum = sum;
+        clone.value = value;
+        for (Gene gene : outputs) {
+            clone.outputs.add(gene.clone_());
+        }
         return clone;
     }
 }

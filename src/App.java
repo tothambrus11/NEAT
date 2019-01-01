@@ -39,7 +39,7 @@ public class App extends PApplet {
         c3 = 0.4f;
         threshold = 10;
 
-        pop = new Population(2, 1, 500);
+        pop = new Population(2, 1, 20000);
 /*
         g1 = new Genome(2, 1);
         g1.nodes.add(new Node(4));
@@ -79,7 +79,6 @@ public class App extends PApplet {
         background(255);
         //println(g1.feedForward(new double[]{1, 1}));
         //g2=g2.reproduction(g1);
-
     }
 
     public void draw() {
@@ -88,7 +87,7 @@ public class App extends PApplet {
         println(frameCount);
         //pop.bestGenome.drawGenome1(350, 0, 700, 800/3, nodeMaxSize, weightMaxSize);
         pop.naturalSelection();
-        println(pop.bestFitness);
+        println(pop.bestGenome.fitness);
         //println(frameRate);
         //g1.mutateAll();
         //g1.calculateFitness();
@@ -121,10 +120,10 @@ public class App extends PApplet {
         //println(g2.distance(g1));
         //println(pop.bestGenome.feedForward(new double[]{0, 0}));
         //pop.bestGenome.printGenome();
-        /*double sum = 0;
+        double sum = 0;
         for (Gene gene : pop.bestGenome.genes) {
             sum += gene.weight;
         }
-        println(sum);*/
+        println(sum);
     }
 }

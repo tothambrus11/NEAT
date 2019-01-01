@@ -103,7 +103,7 @@ class Population {
     void setBestGenome() {
         for (Genome genome : genomes) {
             if (genome.fitness > bestFitness) {
-                bestGenome = genome;
+                bestGenome = genome.clone_();
                 bestFitness = genome.fitness;
             }
         }

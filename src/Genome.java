@@ -37,18 +37,55 @@ class Genome {
         this.layers = layers;
     }
 
+
     void calculateFitness() {
         double sum = 0;
-        sum += Math.abs(feedForward(new double[]{0.0, 0.0})[0] - 0);
-        sum += Math.abs(feedForward(new double[]{0.0, 1.0})[0] - 1);
-        sum += Math.abs(feedForward(new double[]{1.0, 0.0})[0] - 1);
-        sum += Math.abs(feedForward(new double[]{1.0, 1.0})[0] - 0);
+        /*sum += Math.abs(feedForward(new double[]{0.0, 0.0})[0] - 0);
+        sum += Math.abs(feedForward(new double[]{0.0, 0.5})[0] - 0.5);
+        sum += Math.abs(feedForward(new double[]{0.5, 0.0})[0] - 0.5);
+        sum += Math.abs(feedForward(new double[]{0.5, 0.5})[0] - 0);*/
         sum = 0;
         for (Gene gene : genes) {
             sum += gene.weight;
         }
-        fitness = Math.abs(10.0 / (21.5 - sum));//10.0 / sum;
+        fitness = Math.abs(10.0 / (21.5 - (sum + (double) nodes.size() / 2)));//10.0 / sum;
+        //fitness = 1.0 / (Math.abs(0.6 - feedForward(new double[]{0.0, 0.0})[0]) + Math.abs(0.6 - feedForward(new double[]{0.2, 0.3})[0]));
     }
+
+    double[] feedForward(double[] input) {
+        calculateNetwork();
+        for (int i = 0; i < inputs; i++) {
+            nodes.get(i).value = input[i];
+        }
+        nodes.get(biasNode).value = 1;
+
+        for (Node node1 : network) {
+            node1.feed(this);
+        }
+
+        double[] output = new double[outputs];
+        for (int i = 0; i < outputs; i++) {
+            output[i] = nodes.get(inputs + i).value;
+        }
+
+        for (Node node : nodes) {
+            node.sum = 0;
+        }
+        return output;
+    }
+
+    void calculateNetwork() {
+        network = new ArrayList<>();
+
+        for (int l = 0; l < layers; l++) {
+            for (Node node : nodes) {
+                if (node.layer == l) {
+                    network.add(node);
+                }
+            }
+        }
+    }
+
 
     Genome crossover(Genome partner) {
         Genome child = new Genome(inputs, outputs, biasNode, layers);
@@ -82,7 +119,7 @@ class Genome {
         for (int i = 0; i < partner.genes.size(); i++) {
             if (matchingGene(this, partner.genes.get(i).innovationNumber) == -1) {
                 if (partner.genes.get(i).from < nodes.size() && partner.genes.get(i).to < nodes.size()) {
-                    if (getNode(partner.genes.get(i).from).layer < getNode(partner.genes.get(i).to).layer) {
+                    if (nodes.get(partner.genes.get(i).from).layer < nodes.get(partner.genes.get(i).to).layer) {
                         if (App.processing.random(1) < 0.5) {
                             child.genes.add(partner.genes.get(i).clone_());
                         }
@@ -95,26 +132,9 @@ class Genome {
         return child;
     }
 
-    double[] feedForward(double[] input) {
-        calculateNetwork();
-        for (int i = 0; i < inputs; i++) {
-            nodes.get(i).value = input[i];
-        }
-        nodes.get(biasNode).value = 1;
 
-        for (Node node1 : network) {
-            node1.feed(this);
-        }
-
-        double[] output = new double[outputs];
-        for (int i = 0; i < outputs; i++) {
-            output[i] = nodes.get(inputs + i).value;
-        }
-
-        for (Node node : nodes) {
-            node.sum = 0;
-        }
-        return output;
+    boolean isSimilarTo(Genome partner, int size) {
+        return distance(partner, size) < App.threshold;
     }
 
     double distance(Genome partner, int size) {
@@ -151,8 +171,28 @@ class Genome {
             }
         }
         if (size <= 20) return App.c1 * excessCount + App.c2 * disjointCount + App.c3 * weightDifference / machingCount;
-        return App.c1 * excessCount + App.c2 * disjointCount + App.c3 * weightDifference / machingCount;
+        return App.c1 * excessCount / nodes.size() + App.c2 * disjointCount / nodes.size() + App.c3 * weightDifference / machingCount;
     }
+
+    int matchingGene(Genome partner, int innovationNumber) {
+        for (int i = 0; i < partner.genes.size(); i++) {
+            if (partner.genes.get(i).innovationNumber == innovationNumber) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    int largestInnovationNumber() {
+        int largestInnovationNumber = -1;
+        for (Gene gene : genes) {
+            if (gene.innovationNumber > largestInnovationNumber) {
+                largestInnovationNumber = gene.innovationNumber;
+            }
+        }
+        return largestInnovationNumber;
+    }
+
 
     void mutate() {
         if (genes.size() == 0 || App.processing.random(1) < 0.06) {
@@ -175,37 +215,28 @@ class Genome {
         }
     }
 
-    boolean isSimilarTo(Genome partner, int size) {
-        return distance(partner, size) < App.threshold;
-    }
+    void addConnection() {
+        if (!isFullyConnected()) {
+            int nodeFrom = (int) App.processing.random(nodes.size());
+            int nodeTo = (int) App.processing.random(nodes.size());
 
-    Node getNode(int number) {
-    /*for (int i=0; i<nodes.size(); i++) {
-     if (nodes.get(i).number==number) {
-     return nodes.get(i);
-     }
-     }
-     return null;*/
-        return nodes.get(number);
-    }
-
-    int matchingGene(Genome partner, int innovationNumber) {
-        for (int i = 0; i < partner.genes.size(); i++) {
-            if (partner.genes.get(i).innovationNumber == innovationNumber) {
-                return i;
+            while (nodes.get(nodeFrom).layer == nodes.get(nodeTo).layer || nodes.get(nodeFrom).isConnectedTo(nodes.get(nodeTo))) {
+                nodeFrom = (int) App.processing.random(nodes.size());
+                nodeTo = (int) App.processing.random(nodes.size());
             }
-        }
-        return -1;
-    }
-
-    int largestInnovationNumber() {
-        int largestInnovationNumber = -1;
-        for (Gene gene : genes) {
-            if (gene.innovationNumber > largestInnovationNumber) {
-                largestInnovationNumber = gene.innovationNumber;
+            int temp;
+            if (nodes.get(nodeFrom).layer > nodes.get(nodeTo).layer) {
+                temp = nodeTo;
+                nodeTo = nodeFrom;
+                nodeFrom = temp;
             }
+
+            genes.add(new Gene(nodeFrom, nodeTo, App.processing.random(-1, 1)));
+            connectNodes();
+        } else {
+            // The network is fully isConnectedTo
+            addNode();
         }
-        return largestInnovationNumber;
     }
 
     boolean isFullyConnected() {
@@ -243,13 +274,13 @@ class Genome {
         nodes.add(new Node(newNodeNumber));
 
         genes.add(new Gene(genes.get(randomGene).from, newNodeNumber, 1));
-        nodes.get(newNodeNumber).layer = getNode(genes.get(randomGene).from).layer + 1;
+        nodes.get(newNodeNumber).layer = nodes.get(genes.get(randomGene).from).layer + 1;
 
         genes.add(new Gene(newNodeNumber, genes.get(randomGene).to, genes.get(randomGene).weight));
 
-        if (getNode(newNodeNumber).layer == getNode(genes.get(randomGene).to).layer) {
+        if (nodes.get(newNodeNumber).layer == nodes.get(genes.get(randomGene).to).layer) {
             for (int i = 0; i < nodes.size() - 1; i++) {
-                if (nodes.get(i).layer >= getNode(newNodeNumber).layer) {
+                if (nodes.get(i).layer >= nodes.get(newNodeNumber).layer) {
                     nodes.get(i).layer++;
                 }
             }
@@ -258,52 +289,16 @@ class Genome {
         connectNodes();
     }
 
-    void addConnection() {
-        if (!isFullyConnected()) {
-            int nodeFrom = (int) App.processing.random(nodes.size());
-            int nodeTo = (int) App.processing.random(nodes.size());
-
-            while (nodes.get(nodeFrom).layer == nodes.get(nodeTo).layer || nodes.get(nodeFrom).connected(nodes.get(nodeTo))) {
-                nodeFrom = (int) App.processing.random(nodes.size());
-                nodeTo = (int) App.processing.random(nodes.size());
-            }
-            int temp;
-            if (nodes.get(nodeFrom).layer > nodes.get(nodeTo).layer) {
-                temp = nodeTo;
-                nodeTo = nodeFrom;
-                nodeFrom = temp;
-            }
-
-            genes.add(new Gene(nodeFrom, nodeTo, App.processing.random(-1, 1)));
-            connectNodes();
-        } else {
-            // The network is fully connected
-            addNode();
-        }
-
-    }
-
     void connectNodes() {
         for (Node node : nodes) {
             node.outputs.clear();
         }
 
         for (Gene gene : genes) {
-            getNode(gene.from).outputs.add(gene);
+            nodes.get(gene.from).outputs.add(gene);
         }
     }
 
-    void calculateNetwork() {
-        network = new ArrayList<>();
-
-        for (int l = 0; l < layers; l++) {
-            for (Node node : nodes) {
-                if (node.layer == l) {
-                    network.add(node);
-                }
-            }
-        }
-    }
 
     void draw(double x1, double y1, double x2, double y2, double nodeSize, double weightSize, int mode) {
         ArrayList<ArrayList<Node>> allNodes = new ArrayList<>();
@@ -403,7 +398,7 @@ class Genome {
                     nodeNumbers.add(nodes.get(i).number);
                 }
             default:
-                App.processing.println("try other mode");
+                //System.out.println("try other mode");
         }
         if (mode == 0 || mode == 1 || mode == 2 || mode == 3) {
             for (Gene gene : genes) {
@@ -478,6 +473,52 @@ class Genome {
             }
         }
         System.out.println();
+    }
+
+    void save() {
+        System.out.println();
+        System.out.print(inputs + "," + outputs + "," + biasNode + "," + layers + ",new int[]{" + nodes.get(0).layer);
+        for (int i = 1; i < nodes.size(); i++) {
+            System.out.print("," + nodes.get(i).layer);
+        }
+        System.out.print("},new int[]{" + genes.get(0).from);
+        for (int i = 1; i < genes.size(); i++) {
+            System.out.print("," + genes.get(i).from);
+        }
+        System.out.print("},new int[]{" + genes.get(0).to);
+        for (int i = 1; i < genes.size(); i++) {
+            System.out.print("," + genes.get(i).to);
+        }
+        System.out.print("},new double[]{" + genes.get(0).weight);
+        for (int i = 1; i < genes.size(); i++) {
+            System.out.print("," + genes.get(i).weight);
+        }
+        System.out.print("},new boolean[]{" + genes.get(0).enabled);
+        for (int i = 1; i < genes.size(); i++) {
+            System.out.print("," + genes.get(i).enabled);
+        }
+        System.out.print("},new int[]{" + genes.get(0).innovationNumber);
+        for (int i = 1; i < genes.size(); i++) {
+            System.out.print("," + genes.get(i).innovationNumber);
+        }
+        System.out.print("}");
+    }
+
+    Genome(int inputs, int outputs, int biasNode, int layers, int[] layer, int[] from, int[] to, double[] weight, boolean[] enabled, int[] innovationNumber) {
+        this.inputs = inputs;
+        this.outputs = outputs;
+        this.biasNode = biasNode;
+        this.layers = layers;
+        for (int i = 0; i < layer.length; i++) {
+            nodes.add(new Node(i));
+            nodes.get(i).layer = layer[i];
+        }
+        for (int i = 0; i < from.length; i++) {
+            genes.add(new Gene(from[i], to[i], weight[i]));
+            genes.get(i).enabled = enabled[i];
+            genes.get(i).innovationNumber = innovationNumber[i];
+        }
+        connectNodes();
     }
 
     Genome clone_() {

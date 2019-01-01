@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Random;
 
 class Population {
     int inputs, outputs, size;
@@ -24,17 +23,11 @@ class Population {
 
     void naturalSelection() {
         sortToSpecies();
-        calculateFitness();
+        testing();
         setBestGenome();
         modifyFitness();
         reproduction();
         mutateAll();
-    }
-
-    void mutateAll() {
-        for (Genome genome : genomes) {
-            genome.mutate();
-        }
     }
 
     void sortToSpecies() {
@@ -58,6 +51,30 @@ class Population {
                     species.add(new ArrayList<>());
                     species.get(species.size() - 1).add(genome);
                 }
+            }
+        }
+    }
+
+    void testing() {
+        for (Genome genome : genomes) {
+            genome.calculateFitness();
+        }
+    }
+
+    void setBestGenome() {
+        for (Genome genome : genomes) {
+            if (genome.fitness > bestFitness) {
+                bestGenome = genome.clone_();
+                bestFitness = genome.fitness;
+            }
+        }
+        //System.out.println("new best");
+    }
+
+    void modifyFitness() {
+        for (ArrayList<Genome> genomesInSpecies : species) {
+            for (Genome genome : genomesInSpecies) {
+                genome.fitness /= genomesInSpecies.size();
             }
         }
     }
@@ -87,35 +104,9 @@ class Population {
         }
     }
 
-    void modifyFitness() {
-        /*for (ArrayList<Genome> genomesInSpecies : species) {
-            for (Genome genome : genomesInSpecies) {
-                genome.fitness /= genomesInSpecies.size();
-            }
-        }*/
-    }
-
-    void calculateFitness() {
+    void mutateAll() {
         for (Genome genome : genomes) {
-            genome.calculateFitness();
-        }
-    }
-
-    void setBestGenome() {
-        for (Genome genome : genomes) {
-            if (genome.fitness > bestFitness) {
-                bestGenome = genome.clone_();
-                bestFitness = genome.fitness;
-            }
-        }
-        //App.processing.println("new best");
-    }
-
-    void drawPopulation() {
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 3; j++) {
-                genomes.get(3 * i + j).draw(App.processing.width / 4 * i, App.processing.height / 3 * j, App.processing.width / 4 * (i + 1), App.processing.height / 3 * (j + 1), App.nodeMaxSize, App.weightMaxSize, 3);
-            }
+            genome.mutate();
         }
     }
 
@@ -138,5 +129,13 @@ class Population {
             currentSum += species.get(i).get(j).fitness;
         }
         return species.get(i).get(j);
+    }
+
+    void drawPopulation() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 3; j++) {
+                genomes.get(3 * i + j).draw(App.processing.width / 4 * i, App.processing.height / 3 * j, App.processing.width / 4 * (i + 1), App.processing.height / 3 * (j + 1), App.nodeMaxSize, App.weightMaxSize, 1);
+            }
+        }
     }
 }

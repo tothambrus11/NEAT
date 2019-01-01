@@ -39,7 +39,7 @@ public class App extends PApplet {
         c3 = 0.4f;
         threshold = 10;
 
-        pop = new Population(2, 1, 20000);
+        pop = new Population(2, 1, 200);
 /*
         g1 = new Genome(2, 1);
         g1.nodes.add(new Node(4));

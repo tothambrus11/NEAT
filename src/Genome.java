@@ -305,349 +305,139 @@ class Genome {
         }
     }
 
-    void drawGenome(double x1, double y1, double x2, double y2, double nodeSize, double weightSize) {
+    void draw(double x1, double y1, double x2, double y2, double nodeSize, double weightSize, int mode) {
         ArrayList<ArrayList<Node>> allNodes = new ArrayList<>();
         ArrayList<PVector> nodePositions = new ArrayList<>();
         ArrayList<Integer> nodeNumbers = new ArrayList<>();
-
-        for (int i = 0; i < layers; i++) {
-            ArrayList<Node> temp = new ArrayList<>();
-            for (Node node : nodes) {
-                if (node.layer == i) {
-                    temp.add(node);
+        if (mode == 0 || mode == 1) {
+            for (int i = 0; i < layers; i++) {
+                ArrayList<Node> temp = new ArrayList<>();
+                for (Node node : nodes) {
+                    if (node.layer == i) {
+                        temp.add(node);
+                    }
                 }
-            }
-            allNodes.add(temp);
-        }
-
-        for (int i = 0; i < layers; i++) {
-            double x = x1 + (double) (i + 1) * (x2 - x1) / (layers + 1);
-            for (int j = 0; j < allNodes.get(i).size(); j++) {
-                double y = y1 + (double) (j + 1) * (y2 - y1) / (double) (allNodes.get(i).size() + 1);
-                nodePositions.add(new PVector((float) x, (float) y));
-                nodeNumbers.add(allNodes.get(i).get(j).number);
+                allNodes.add(temp);
             }
         }
+        if (mode == 1 || mode == 2 || mode == 3) {
+            x1 += nodeSize;
+            x2 -= nodeSize;
+            y1 += nodeSize;
+            y2 -= nodeSize;
 
-        for (Gene gene : genes) {
-            if (gene.enabled) {
-                PVector fromPos;
-                PVector toPos;
-                fromPos = nodePositions.get(nodeNumbers.indexOf(gene.from));
-                toPos = nodePositions.get(nodeNumbers.indexOf(gene.to));
-                if (gene.weight >= 0) {
-                    App.processing.stroke(0, 0, 255);
-                    App.processing.fill(0, 0, 255);
+            if (inputs == 0) {
+                if (outputs == 1) {
+                    nodePositions.add(new PVector((float) x2, (float) (y2 + y1) / 2));
+                    nodeNumbers.add(0);
+                    nodePositions.add(new PVector((float) x1, (float) (y2 + y1) / 2));
+                    nodeNumbers.add(biasNode);
                 } else {
-                    App.processing.stroke(255, 0, 0);
-                    App.processing.fill(255, 0, 0);
+                    for (int i = 0; i < outputs; i++) {
+                        nodePositions.add(new PVector((float) x2, (float) (y1 + (float) i * (y2 - y1) / (outputs - 1))));
+                        nodeNumbers.add(i);
+                    }
+                    nodePositions.add(new PVector((float) x1, (float) ((y2 + y1) / 2)));
+                    nodeNumbers.add(biasNode);
                 }
-                double size = weightSize * Math.abs(gene.weight / 4) / (Math.abs(gene.weight / 4) + 1);
-                App.processing.strokeWeight((float) size);
-                App.processing.line(fromPos.x, fromPos.y, toPos.x, toPos.y);
-                PVector dotPos = toPos.copy().sub(toPos.copy().sub(fromPos).div(4));
-                App.processing.strokeWeight(0);
-                App.processing.ellipse(dotPos.x, dotPos.y, (float) (size * 4), (float) (size * 4));
-            }
-        }
-
-        for (int i = 0; i < nodePositions.size(); i++) {
-            App.processing.stroke(255);
-            App.processing.strokeWeight(1);
-            App.processing.fill(0);
-            App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
-            App.processing.fill(255);
-            App.processing.textSize((float) (nodeSize / 2));
-            App.processing.textAlign(CENTER, CENTER);
-            App.processing.text(nodeNumbers.get(i), nodePositions.get(i).x, nodePositions.get(i).y);
-        }
-    }
-
-    void drawGenome1(double x1, double y1, double x2, double y2, double nodeSize, double weightSize) {
-        ArrayList<ArrayList<Node>> allNodes = new ArrayList<>();
-        ArrayList<PVector> nodePositions = new ArrayList<>();
-        ArrayList<Integer> nodeNumbers = new ArrayList<>();
-
-        x1 += nodeSize;
-        x2 -= nodeSize;
-        y1 += nodeSize;
-        y2 -= nodeSize;
-
-        for (int i = 0; i < layers; i++) {
-            ArrayList<Node> temp = new ArrayList<>();
-            for (Node node : nodes) {
-                if (node.layer == i) {
-                    temp.add(node);
-                }
-            }
-            allNodes.add(temp);
-        }
-
-        if (inputs == 0) {
-            if (outputs == 1) {
-                nodePositions.add(new PVector((float) x2, (float) (y2 + y1) / 2));
-                nodeNumbers.add(0);
-                nodePositions.add(new PVector((float) x1, (float) (y2 + y1) / 2));
-                nodeNumbers.add(biasNode);
-            } else {
-                for (int i = 0; i < outputs; i++) {
-                    nodePositions.add(new PVector((float) x2, (float) (y1 + (float) i * (y2 - y1) / (outputs - 1))));
-                    nodeNumbers.add(i);
-                }
-                nodePositions.add(new PVector((float) x1, (float) ((y2 + y1) / 2)));
-                nodeNumbers.add(biasNode);
-            }
-        } else {
-            if (outputs == 1) {
-                for (int i = 0; i < inputs; i++) {
-                    nodePositions.add(new PVector((float) x1, (float) (y1 + (double) i * (y2 - y1) / inputs)));
-                    nodeNumbers.add(i);
-                }
-                for (int i = 0; i < outputs; i++) {
-                    nodePositions.add(new PVector((float) x2, (float) ((y2 + y1) / 2)));
-                    nodeNumbers.add(inputs + i);
-                }
-                nodePositions.add(new PVector((float) x1, (float) y2));
-                nodeNumbers.add(biasNode);
-            } else {
-                for (int i = 0; i < inputs; i++) {
-                    nodePositions.add(new PVector((float) x1, (float) (y1 + (double) i * (y2 - y1) / inputs)));
-                    nodeNumbers.add(i);
-                }
-                for (int i = 0; i < outputs; i++) {
-                    nodePositions.add(new PVector((float) x2, (float) (y1 + (double) i * (y2 - y1) / (outputs - 1))));
-                    nodeNumbers.add(inputs + i);
-                }
-                nodePositions.add(new PVector((float) x1, (float) y2));
-                nodeNumbers.add(biasNode);
-            }
-        }
-
-        for (int i = 1; i < layers - 1; i++) {
-            double x = x1 + (double) i * (x2 - x1) / (layers - 1);
-            for (int j = 0; j < allNodes.get(i).size(); j++) {
-                double y = y1 + (double) (j + 1) * (y2 - y1) / (allNodes.get(i).size() + 1);
-                nodePositions.add(new PVector((float) x, (float) y));
-                nodeNumbers.add(allNodes.get(i).get(j).number);
-            }
-        }
-
-        for (Gene gene : genes) {
-            if (gene.enabled) {
-                PVector fromPos;
-                PVector toPos;
-                fromPos = nodePositions.get(nodeNumbers.indexOf(gene.from));
-                toPos = nodePositions.get(nodeNumbers.indexOf(gene.to));
-                if (gene.weight >= 0) {
-                    App.processing.stroke(0, 0, 255);
-                    App.processing.fill(0, 0, 255);
-                } else {
-                    App.processing.stroke(255, 0, 0);
-                    App.processing.fill(255, 0, 0);
-                }
-                double size = weightSize * Math.abs(gene.weight / 4) / (Math.abs(gene.weight / 4) + 1);
-                App.processing.strokeWeight((float) size);
-                App.processing.line(fromPos.x, fromPos.y, toPos.x, toPos.y);
-                PVector dotPos = toPos.copy().sub(toPos.copy().sub(fromPos).div(4));
-                App.processing.strokeWeight(0);
-                App.processing.ellipse(dotPos.x, dotPos.y, (float) (size * 4), (float) (size * 4));
-            }
-        }
-
-        for (int i = 0; i < nodePositions.size(); i++) {
-            App.processing.stroke(255);
-            App.processing.strokeWeight(1);
-            App.processing.fill(30);
-            App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
-            App.processing.fill(255);
-            App.processing.textSize((float) (nodeSize / 2));
-            App.processing.textAlign(CENTER, CENTER);
-            App.processing.text(nodeNumbers.get(i), nodePositions.get(i).x, nodePositions.get(i).y);
-        }
-    }
-
-    void drawGenome2(double x1, double y1, double x2, double y2, double nodeSize, double weightSize) {
-        ArrayList<PVector> nodePositions = new ArrayList<>();
-        ArrayList<Integer> nodeNumbers = new ArrayList<>();
-
-        x1 += nodeSize;
-        x2 -= nodeSize;
-        y1 += nodeSize;
-        y2 -= nodeSize;
-
-        calculateNetwork();
-
-        if (inputs == 0) {
-            if (outputs == 1) {
-                nodePositions.add(new PVector((float) x2, (float) ((y2 + y1) / 2)));
-                nodeNumbers.add(0);
-                nodePositions.add(new PVector((float) x1, (float) (y2 + y1) / 2));
-                nodeNumbers.add(biasNode);
-            } else {
-                for (int i = 0; i < outputs; i++) {
-                    nodePositions.add(new PVector((float) x2, (float) (y1 + (((double) i * (y2 - y1)) / (outputs - 1)))));
-                    nodeNumbers.add(i);
-                }
-                nodePositions.add(new PVector((float) x1, (float) ((y2 + y1) / 2.0)));
-                nodeNumbers.add(biasNode);
-            }
-        } else {
-            if (outputs == 1) {
-                for (int i = 0; i < inputs; i++) {
-                    nodePositions.add(new PVector((float) x1, (float) (y1 + (float) i * (y2 - y1) / inputs)));
-                    nodeNumbers.add(i);
-                }
-                for (int i = 0; i < outputs; i++) {
-                    nodePositions.add(new PVector((float) x2, (float) (y2 + y1) / 2.0f));
-                    nodeNumbers.add(inputs + i);
-                }
-                nodePositions.add(new PVector((float) x1, (float) y2));
-                nodeNumbers.add(biasNode);
             } else {
                 for (int i = 0; i < inputs; i++) {
                     nodePositions.add(new PVector((float) x1, (float) (y1 + (float) i * (y2 - y1) / inputs)));
                     nodeNumbers.add(i);
                 }
-                for (int i = 0; i < outputs; i++) {
-                    nodePositions.add(new PVector((float) x2, (float) (y1 + (double) i * (y2 - y1) / (outputs - 1))));
-                    nodeNumbers.add(inputs + i);
-                }
-                nodePositions.add(new PVector((float) x1, (float) y2));
-                nodeNumbers.add(biasNode);
-            }
-        }
-
-        if (nodes.size() != biasNode + 1) {
-            PVector origo = new PVector((float) ((x2 + x1) / 2), (float) (y2 + y1) / 2);
-            double r1 = (x2 - x1) / 4;
-            double r2 = (y2 - y1) / 2.5;
-            for (int i = 0; i < nodes.size() - biasNode - 1; i++) {
-                double angle = (double) i * 2 * Math.PI / (nodes.size() - biasNode - 1);
-                nodePositions.add(new PVector((float) (origo.x - r1 * Math.cos(angle)), (float) (origo.y - r2 * Math.sin(angle))));
-                nodeNumbers.add(biasNode + i + 1);
-            }
-        }
-
-        for (Gene gene : genes) {
-            if (gene.enabled) {
-                PVector fromPos;
-                PVector toPos;
-                fromPos = nodePositions.get(nodeNumbers.indexOf(gene.from));
-                toPos = nodePositions.get(nodeNumbers.indexOf(gene.to));
-                if (gene.weight >= 0) {
-                    App.processing.stroke(0, 0, 255);
-                    App.processing.fill(0, 0, 255);
+                if (outputs == 1) {
+                    for (int i = 0; i < outputs; i++) {
+                        nodePositions.add(new PVector((float) x2, (float) (y2 + y1) / 2));
+                        nodeNumbers.add(inputs + i);
+                    }
+                    nodePositions.add(new PVector((float) x1, (float) y2));
+                    nodeNumbers.add(biasNode);
                 } else {
-                    App.processing.stroke(255, 0, 0);
-                    App.processing.fill(255, 0, 0);
+                    for (int i = 0; i < outputs; i++) {
+                        nodePositions.add(new PVector((float) x2, (float) (y1 + (float) i * (y2 - y1) / (outputs - 1))));
+                        nodeNumbers.add(inputs + i);
+                    }
+                    nodePositions.add(new PVector((float) x1, (float) y2));
+                    nodeNumbers.add(biasNode);
                 }
-                double size = weightSize * Math.abs(gene.weight / 4) / (Math.abs(gene.weight / 4) + 1);
-                App.processing.strokeWeight((float) size);
-                App.processing.line(fromPos.x, fromPos.y, toPos.x, toPos.y);
-                PVector dotPos = toPos.copy().sub(toPos.copy().sub(fromPos).div(4));
-                App.processing.strokeWeight(0);
-                App.processing.ellipse(dotPos.x, dotPos.y, (float) (size * 4), (float) (size * 4));
             }
         }
-
-        for (int i = 0; i < nodePositions.size(); i++) {
-            App.processing.stroke(255);
-            App.processing.strokeWeight(1);
-            App.processing.fill(0);
-            App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
-            App.processing.fill(255);
-            App.processing.textSize((float) (nodeSize / 2));
-            App.processing.textAlign(CENTER, CENTER);
-            App.processing.text(nodeNumbers.get(i), nodePositions.get(i).x, nodePositions.get(i).y);
-        }
-    }
-
-    void drawGenome3(double x1, double y1, double x2, double y2, double nodeSize, double weightSize) {
-        ArrayList<PVector> nodePositions = new ArrayList<>();
-        ArrayList<Integer> nodeNumbers = new ArrayList<>();
-
-        x1 += nodeSize;
-        x2 -= nodeSize;
-        y1 += nodeSize;
-        y2 -= nodeSize;
-
-
-        if (inputs == 0) {
-            if (outputs == 1) {
-                nodePositions.add(new PVector((float) x2, (float) ((y2 + y1) / 2)));
-                nodeNumbers.add(0);
-                nodePositions.add(new PVector((float) x1, (float) (y2 + y1) / 2));
-                nodeNumbers.add(biasNode);
-            } else {
-                for (int i = 0; i < outputs; i++) {
-                    nodePositions.add(new PVector((float) x2, (float) (y1 + (((double) i * (y2 - y1)) / (outputs - 1)))));
-                    nodeNumbers.add(i);
+        switch (mode) {
+            case 0:
+                for (int i = 0; i < layers; i++) {
+                    double x = x1 + (double) (i + 1) * (x2 - x1) / (layers + 1);
+                    for (int j = 0; j < allNodes.get(i).size(); j++) {
+                        double y = y1 + (double) (j + 1) * (y2 - y1) / (double) (allNodes.get(i).size() + 1);
+                        nodePositions.add(new PVector((float) x, (float) y));
+                        nodeNumbers.add(allNodes.get(i).get(j).number);
+                    }
                 }
-                nodePositions.add(new PVector((float) x1, (float) ((y2 + y1) / 2.0f)));
-                nodeNumbers.add(biasNode);
+                break;
+            case 1:
+                for (int i = 1; i < layers - 1; i++) {
+                    double x = x1 + (double) i * (x2 - x1) / (layers - 1);
+                    for (int j = 0; j < allNodes.get(i).size(); j++) {
+                        double y = y1 + (double) (j + 1) * (y2 - y1) / (allNodes.get(i).size() + 1);
+                        nodePositions.add(new PVector((float) x, (float) y));
+                        nodeNumbers.add(allNodes.get(i).get(j).number);
+                    }
+                }
+                break;
+            case 2:
+                calculateNetwork();
+
+                if (nodes.size() != biasNode + 1) {
+                    PVector origo = new PVector((float) ((x2 + x1) / 2), (float) (y2 + y1) / 2);
+                    double r1 = (x2 - x1) / 4;
+                    double r2 = (y2 - y1) / 2.5;
+                    for (int i = 0; i < nodes.size() - biasNode - 1; i++) {
+                        double angle = (double) i * 2 * Math.PI / (nodes.size() - biasNode - 1);
+                        nodePositions.add(new PVector((float) (origo.x - r1 * Math.cos(angle)), (float) (origo.y - r2 * Math.sin(angle))));
+                        nodeNumbers.add(biasNode + i + 1);
+                    }
+                }
+                break;
+            case 3:
+                for (int i = biasNode + 1; i < nodes.size(); i++) {
+                    nodePositions.add(new PVector(App.processing.random((float) x1, (float) x2), App.processing.random((float) y1, (float) y2)));
+                    nodeNumbers.add(nodes.get(i).number);
+                }
+            default:
+                App.processing.println("try other mode");
+        }
+        if (mode == 0 || mode == 1 || mode == 2 || mode == 3) {
+            for (Gene gene : genes) {
+                if (gene.enabled) {
+                    PVector fromPos;
+                    PVector toPos;
+                    fromPos = nodePositions.get(nodeNumbers.indexOf(gene.from));
+                    toPos = nodePositions.get(nodeNumbers.indexOf(gene.to));
+                    if (gene.weight >= 0) {
+                        App.processing.stroke(0, 0, 255);
+                        App.processing.fill(0, 0, 255);
+                    } else {
+                        App.processing.stroke(255, 0, 0);
+                        App.processing.fill(255, 0, 0);
+                    }
+                    double size = weightSize * Math.abs(gene.weight / 4) / (Math.abs(gene.weight / 4) + 1);
+                    App.processing.strokeWeight((float) size);
+                    App.processing.line(fromPos.x, fromPos.y, toPos.x, toPos.y);
+                    PVector dotPos = toPos.copy().sub(toPos.copy().sub(fromPos).div(4));
+                    App.processing.strokeWeight(0);
+                    App.processing.ellipse(dotPos.x, dotPos.y, (float) (size * 4), (float) (size * 4));
+                }
             }
-        } else {
-            if (outputs == 1) {
-                for (int i = 0; i < inputs; i++) {
-                    nodePositions.add(new PVector((float) x1, (float) (y1 + (float) i * (y2 - y1) / inputs)));
-                    nodeNumbers.add(i);
-                }
-                for (int i = 0; i < outputs; i++) {
-                    nodePositions.add(new PVector((float) x2, (float) (y2 + y1) / 2.0f));
-                    nodeNumbers.add(inputs + i);
-                }
-                nodePositions.add(new PVector((float) x1, (float) y2));
-                nodeNumbers.add(biasNode);
-            } else {
-                for (int i = 0; i < inputs; i++) {
-                    nodePositions.add(new PVector((float) x1, (float) (y1 + (float) i * (y2 - y1) / inputs)));
-                    nodeNumbers.add(i);
-                }
-                for (int i = 0; i < outputs; i++) {
-                    nodePositions.add(new PVector((float) x2, (float) (y1 + (double) i * (y2 - y1) / (outputs - 1))));
-                    nodeNumbers.add(inputs + i);
-                }
-                nodePositions.add(new PVector((float) x1, (float) y2));
-                nodeNumbers.add(biasNode);
+
+            for (int i = 0; i < nodePositions.size(); i++) {
+                App.processing.stroke(255);
+                App.processing.strokeWeight(1);
+                App.processing.fill(0);
+                App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
+                App.processing.fill(255);
+                App.processing.textSize((float) (nodeSize / 2));
+                App.processing.textAlign(CENTER, CENTER);
+                App.processing.text(nodeNumbers.get(i), nodePositions.get(i).x, nodePositions.get(i).y);
             }
-        }
-
-        for (int i = biasNode + 1; i < nodes.size(); i++) {
-            nodePositions.add(new PVector(App.processing.random((float) x1, (float) x2), App.processing.random((float) y1, (float) y2)));
-            nodeNumbers.add(nodes.get(i).number);
-        }
-
-        for (Gene gene : genes) {
-            if (gene.enabled) {
-                PVector fromPos;
-                PVector toPos;
-                fromPos = nodePositions.get(nodeNumbers.indexOf(gene.from));
-                toPos = nodePositions.get(nodeNumbers.indexOf(gene.to));
-                if (gene.weight >= 0) {
-                    App.processing.stroke(0, 0, 255);
-                    App.processing.fill(0, 0, 255);
-                } else {
-                    App.processing.stroke(255, 0, 0);
-                    App.processing.fill(255, 0, 0);
-                }
-                double size = weightSize * Math.abs(gene.weight / 4) / (Math.abs(gene.weight / 4) + 1);
-                App.processing.strokeWeight((float) size);
-                App.processing.line(fromPos.x, fromPos.y, toPos.x, toPos.y);
-                PVector dotPos = toPos.copy().sub(toPos.copy().sub(fromPos).div(4));
-                App.processing.strokeWeight(0);
-                App.processing.ellipse(dotPos.x, dotPos.y, (float) (size * 4), (float) (size * 4));
-            }
-        }
-
-        for (int i = 0; i < nodePositions.size(); i++) {
-            App.processing.stroke(255);
-            App.processing.strokeWeight(1);
-            App.processing.fill(0);
-            App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
-            App.processing.fill(255);
-            App.processing.textSize((float) (nodeSize / 2));
-            App.processing.textAlign(CENTER, CENTER);
-            App.processing.text(nodeNumbers.get(i), nodePositions.get(i).x, nodePositions.get(i).y);
         }
     }
 

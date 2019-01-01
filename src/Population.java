@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 class Population {
     int inputs, outputs, size;
@@ -113,7 +114,7 @@ class Population {
     void drawPopulation() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 3; j++) {
-                genomes.get(3 * i + j).drawGenome1(App.processing.width / 4 * i, App.processing.height / 3 * j, App.processing.width / 4 * (i + 1), App.processing.height / 3 * (j + 1), App.nodeMaxSize, App.weightMaxSize);
+                genomes.get(3 * i + j).draw(App.processing.width / 4 * i, App.processing.height / 3 * j, App.processing.width / 4 * (i + 1), App.processing.height / 3 * (j + 1), App.nodeMaxSize, App.weightMaxSize, 3);
             }
         }
     }

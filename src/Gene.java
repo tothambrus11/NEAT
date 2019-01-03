@@ -31,7 +31,7 @@ class Gene {
     }
 
     void mutateWeight() {
-        weight += App.processing.randomGaussian() / 4;
+        weight += App.processing.randomGaussian();
         if (weight > App.weightMax) {
             weight = App.weightMax;
         } else if (weight < App.weightMin) {

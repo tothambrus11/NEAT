@@ -39,21 +39,22 @@ class Genome {
 
 
     void calculateFitness() {
+        calculateNetwork();
         double sum = 0;
-        /*sum += Math.abs(feedForward(new double[]{0.0, 0.0})[0] - 0);
-        sum += Math.abs(feedForward(new double[]{0.0, 0.5})[0] - 0.5);
-        sum += Math.abs(feedForward(new double[]{0.5, 0.0})[0] - 0.5);
-        sum += Math.abs(feedForward(new double[]{0.5, 0.5})[0] - 0);*/
-        sum = 0;
+        sum += Math.abs(feedForward(new double[]{0.0, 0.0})[0] - 0);
+        sum += Math.abs(feedForward(new double[]{0.0, 1.0})[0] - 1.0);
+        sum += Math.abs(feedForward(new double[]{1.0, 0.0})[0] - 1.0);
+        sum += Math.abs(feedForward(new double[]{1.0, 1.0})[0] - 0);
+        /*sum = 0;
         for (Gene gene : genes) {
             sum += gene.weight;
         }
-        fitness = Math.abs(10.0 / (21.5 - (sum + (double) nodes.size() / 2)));//10.0 / sum;
+        fitness = Math.abs(10.0 / (21.5 - (sum + (double) nodes.size() / 2)));//10.0 / sum;*/
         //fitness = 1.0 / (Math.abs(0.6 - feedForward(new double[]{0.0, 0.0})[0]) + Math.abs(0.6 - feedForward(new double[]{0.2, 0.3})[0]));
+        fitness = 10.0 / sum;
     }
 
     double[] feedForward(double[] input) {
-        calculateNetwork();
         for (int i = 0; i < inputs; i++) {
             nodes.get(i).value = input[i];
         }
@@ -195,17 +196,17 @@ class Genome {
 
 
     void mutate() {
-        if (genes.size() == 0 || App.processing.random(1) < 0.06) {
+        if (genes.size() == 0 || App.processing.random(1) < 0.03) {
             addConnection();
             connectNodes();
         }
-        if (App.processing.random(1) < 0.03) {
+        if (App.processing.random(1) < 0.015) {
             addNode();
             connectNodes();
         }
         if (App.processing.random(1) < 0.8) {
             for (Gene gene : genes) {
-                if (App.processing.random(1) < 0.9) {
+                if (App.processing.random(1) < 0.75) {
                     gene.mutateWeight();
                 } else {
                     gene.restartWeight();
@@ -408,11 +409,11 @@ class Genome {
                     fromPos = nodePositions.get(nodeNumbers.indexOf(gene.from));
                     toPos = nodePositions.get(nodeNumbers.indexOf(gene.to));
                     if (gene.weight >= 0) {
-                        App.processing.stroke(0, 0, 255);
-                        App.processing.fill(0, 0, 255);
+                        App.processing.stroke(100, 149, 237, 150);
+                        App.processing.fill(100, 149, 237, 200);
                     } else {
-                        App.processing.stroke(255, 0, 0);
-                        App.processing.fill(255, 0, 0);
+                        App.processing.stroke(248, 131, 121, 150);
+                        App.processing.fill(248, 131, 121, 200);
                     }
                     double size = weightSize * Math.abs(gene.weight / 4) / (Math.abs(gene.weight / 4) + 1);
                     App.processing.strokeWeight((float) size);
@@ -424,12 +425,12 @@ class Genome {
             }
 
             for (int i = 0; i < nodePositions.size(); i++) {
-                App.processing.stroke(255);
-                App.processing.strokeWeight(1);
-                App.processing.fill(0);
+                App.processing.stroke(20, 10);
+                App.processing.strokeWeight(2);
+                App.processing.fill(255, 30);
                 App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
                 App.processing.fill(255);
-                App.processing.textSize((float) (nodeSize / 2));
+                App.processing.textSize((float) (nodeSize * 0.6));
                 App.processing.textAlign(CENTER, CENTER);
                 App.processing.text(nodeNumbers.get(i), nodePositions.get(i).x, nodePositions.get(i).y);
             }

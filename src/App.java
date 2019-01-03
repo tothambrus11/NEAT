@@ -36,10 +36,10 @@ public class App extends PApplet {
         weightMax = 100;
         c1 = 1;
         c2 = 1;
-        c3 = 0.4f;
-        threshold = 10;
+        c3 = 0.4;
+        threshold = 3;
 
-        pop = new Population(2, 1, 500);
+        pop = new Population(2, 1, 1000);
 
         /*Genome g=new Genome(2,1,3,2,new int[]{0,0,1,0},new int[]{3},new int[]{2},new double[]{0.40533241629600525},new boolean[]{true},new int[]{1});
         g.draw(0, 0, 800, 400, nodeMaxSize, weightMaxSize,1);
@@ -80,7 +80,7 @@ public class App extends PApplet {
         g2.genes.add(new Gene(3, 4, -1));
         g2.genes.add(new Gene(0, 5, -1));
         g2.connectNodes();*/
-        frameRate(2);
+        frameRate(20);
         //noLoop();
         background(255);
         //println(g1.feedForward(new double[]{1, 1}));

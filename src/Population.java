@@ -14,7 +14,9 @@ class Population {
         genomes = new ArrayList<>();
         for (int i = 0; i < size_; i++) {
             genomes.add(new Genome(inputs, outputs));
-            genomes.get(i).mutate();
+            for (int j = 0; j < 5; j++) {
+                genomes.get(i).mutate();
+            }
         }
         bestGenome = genomes.get(0);
         bestGenome.calculateFitness();
@@ -23,9 +25,10 @@ class Population {
 
     void naturalSelection() {
         sortToSpecies();
+        System.out.println(species.size());
         testing();
         setBestGenome();
-        modifyFitness();
+        //modifyFitness();
         reproduction();
         mutateAll();
     }
@@ -62,13 +65,24 @@ class Population {
     }
 
     void setBestGenome() {
-        for (Genome genome : genomes) {
-            if (genome.fitness > bestFitness) {
-                bestGenome = genome.clone_();
-                bestFitness = genome.fitness;
+        int index = -1;
+        for (int i = 0; i < genomes.size(); i++) {
+            if (genomes.get(i).fitness > bestFitness) {
+                index = i;
             }
         }
-        //System.out.println("new best");
+        if (index != -1) {
+            bestGenome = genomes.get(index).clone_();
+            bestFitness = genomes.get(index).fitness;
+            System.out.println("new best");
+            bestGenome.calculateNetwork();
+            System.out.println(bestGenome.feedForward(new double[]{0.0, 0.0})[0]);
+            System.out.println(bestGenome.feedForward(new double[]{0.0, 1.0})[0]);
+            System.out.println(bestGenome.feedForward(new double[]{1.0, 0.0})[0]);
+            System.out.println(bestGenome.feedForward(new double[]{1.0, 1.0})[0]);
+            System.out.println();
+            bestGenome.save();
+        }
     }
 
     void modifyFitness() {

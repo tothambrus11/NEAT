@@ -21,8 +21,8 @@ public class App extends PApplet {
     }
 
     public void settings() {
-        //size(1400, 800);
-        fullScreen();
+        size(1400, 800);
+        //fullScreen();
     }
 
     public void setup() {
@@ -30,8 +30,8 @@ public class App extends PApplet {
 
         innovationIn = new ArrayList<>();
         innovationOut = new ArrayList<>();
-        weightMaxSize = 4;
-        nodeMaxSize = 20;
+        weightMaxSize = 5;
+        nodeMaxSize = 21;
 
         weightMin = -100;
         weightMax = 100;
@@ -40,7 +40,7 @@ public class App extends PApplet {
         c3 = 0.4;
         threshold = 4;
 
-        pop = new Population(2, 1, 1000);
+        pop = new Population(2, 1, 500);
 
         /*Genome g=new Genome(2,1,3,2,new int[]{0,0,1,0},new int[]{3},new int[]{2},new double[]{0.40533241629600525},new boolean[]{true},new int[]{1});
         g.draw(0, 0, 800, 400, nodeMaxSize, weightMaxSize,1);

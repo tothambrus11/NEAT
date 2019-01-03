@@ -29,7 +29,7 @@ class Population {
         calculateFitness();
         drawPopulation(0, 0, App.processing.width, App.processing.height, 8, 6, 1);
         setBestGenome();
-        modifyFitness();
+        //modifyFitness();
         reproduction();
         mutateAll();
     }

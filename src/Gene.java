@@ -40,7 +40,7 @@ class Gene {
     }
 
     void restartWeight() {
-        weight = App.processing.random(-1, 1);
+        weight = App.processing.random((float) -0.5, (float) 0.5);
         if (weight > App.weightMax) {
             weight = App.weightMax;
         } else if (weight < App.weightMin) {

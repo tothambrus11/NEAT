@@ -28,7 +28,7 @@ class Node {
         //if (x > 0) return x;
         //return 0.15f * x;
         //return (2.0*x)/(1+abs(x))+0.2*abs(x)*x/(abs(x)+1);
-        return 1.0 / (1.0 + Math.exp(-3.0 * x));
+        return 1.0 / (1.0 + Math.exp(-0.5 * x));
     }
 
     boolean isConnectedTo(Node node) {

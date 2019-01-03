@@ -196,17 +196,17 @@ class Genome {
 
 
     void mutate() {
-        if (genes.size() == 0 || App.processing.random(1) < 0.03) {
+        if (genes.size() == 0 || App.processing.random(1) < 0.5) {
             addConnection();
             connectNodes();
         }
-        if (App.processing.random(1) < 0.015) {
+        if (App.processing.random(1) < 0.01) {
             addNode();
             connectNodes();
         }
         if (App.processing.random(1) < 0.8) {
             for (Gene gene : genes) {
-                if (App.processing.random(1) < 0.75) {
+                if (App.processing.random(1) < 0.9) {
                     gene.mutateWeight();
                 } else {
                     gene.restartWeight();
@@ -528,6 +528,7 @@ class Genome {
         }
         connectNodes();
     }
+
 
     Genome clone_() {
         Genome clone = new Genome(inputs, outputs, biasNode, layers);

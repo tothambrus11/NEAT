@@ -49,6 +49,7 @@ class Node {
         return false;
     }
 
+
     Node clone_() {
         Node clone = new Node(number);
         clone.layer = layer;

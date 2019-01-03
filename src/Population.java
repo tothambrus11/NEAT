@@ -5,7 +5,6 @@ class Population {
     ArrayList<Genome> genomes, representators;
     ArrayList<ArrayList<Genome>> species;
     Genome bestGenome;
-    double bestFitness;
 
     Population(int inputs_, int outputs_, int size_) {
         inputs = inputs_;
@@ -20,16 +19,15 @@ class Population {
         }
         bestGenome = genomes.get(0);
         bestGenome.calculateFitness();
-        bestFitness = bestGenome.fitness;
     }
 
     void naturalSelection() {
         sortToSpecies();
         System.out.println(species.size());
         calculateFitness();
-        drawPopulation(0, 0, App.processing.width, App.processing.height, 8, 6, 1);
         setBestGenome();
-        //modifyFitness();
+        drawPopulation(0, 0, App.processing.width, App.processing.height, 8, 6, 1);
+        modifyFitness();
         reproduction();
         mutateAll();
     }
@@ -68,13 +66,12 @@ class Population {
     void setBestGenome() {
         int index = -1;
         for (int i = 0; i < genomes.size(); i++) {
-            if (genomes.get(i).fitness > bestFitness) {
+            if (genomes.get(i).fitness > bestGenome.fitness) {
                 index = i;
             }
         }
         if (index != -1) {
             bestGenome = genomes.get(index).clone_();
-            bestFitness = genomes.get(index).fitness;
             System.out.println("new best");
             bestGenome.calculateNetwork();
             System.out.println(bestGenome.feedForward(new double[]{0.0, 0.0})[0]);
@@ -172,6 +169,10 @@ class Population {
             }
         }
         if (mode == 1) {
+            ArrayList<Genome> genomes2 = new ArrayList<>();
+            for (Genome genome : genomes) {
+                genomes2.add(genome);
+            }
             double dx = (x2 - x1) / nx;
             double dy = (y2 - y1) / ny;
             App.processing.stroke(255, 100);
@@ -187,19 +188,31 @@ class Population {
             double x = x1;
             for (int j = 1; j < nx; j++) {
                 x += dx;
-                if (index < genomes.size()) {
-                    genomes.get(index).draw(x, y, x + dx, y + dy, App.nodeMaxSize, App.weightMaxSize, 1);
+                if (genomes2.size() != 0) {
+                    int bestIndex = 0;
+                    for (int k = 0; k < genomes2.size(); k++) {
+                        if (genomes2.get(k).fitness > genomes2.get(bestIndex).fitness) {
+                            bestIndex = k;
+                        }
+                    }
+                    genomes2.get(bestIndex).draw(x, y, x + dx, y + dy, App.nodeMaxSize, App.weightMaxSize, 1);
+                    genomes2.remove(bestIndex);
                 }
-                index++;
             }
             for (int i = 1; i < ny; i++) {
                 y += dy;
                 x = x1;
                 for (int j = 0; j < nx; j++) {
-                    if (index < genomes.size()) {
-                        genomes.get(index).draw(x, y, x + dx, y + dy, App.nodeMaxSize, App.weightMaxSize, 1);
+                    if (genomes2.size() != 0) {
+                        int bestIndex = 0;
+                        for (int k = 0; k < genomes2.size(); k++) {
+                            if (genomes2.get(k).fitness > genomes2.get(bestIndex).fitness) {
+                                bestIndex = k;
+                            }
+                        }
+                        genomes2.get(bestIndex).draw(x, y, x + dx, y + dy, App.nodeMaxSize, App.weightMaxSize, 1);
+                        genomes2.remove(bestIndex);
                     }
-                    index++;
                     x += dx;
                 }
             }

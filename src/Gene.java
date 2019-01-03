@@ -48,6 +48,7 @@ class Gene {
         }
     }
 
+
     Gene clone_() {
         Gene clone = new Gene(from, to, weight);
         clone.enabled = enabled;

@@ -408,11 +408,11 @@ class Genome {
                     fromPos = nodePositions.get(nodeNumbers.indexOf(gene.from));
                     toPos = nodePositions.get(nodeNumbers.indexOf(gene.to));
                     if (gene.weight >= 0) {
-                        App.processing.stroke(0, 0, 255);
-                        App.processing.fill(0, 0, 255);
+                        App.processing.stroke(44, 58, 165);
+                        App.processing.fill(44, 58, 165);
                     } else {
-                        App.processing.stroke(255, 0, 0);
-                        App.processing.fill(255, 0, 0);
+                        App.processing.stroke(216, 30, 30);
+                        App.processing.fill(216, 30, 30);
                     }
                     double size = weightSize * Math.abs(gene.weight / 4) / (Math.abs(gene.weight / 4) + 1);
                     App.processing.strokeWeight((float) size);
@@ -424,9 +424,9 @@ class Genome {
             }
 
             for (int i = 0; i < nodePositions.size(); i++) {
-                App.processing.stroke(255);
-                App.processing.strokeWeight(1);
-                App.processing.fill(0);
+                App.processing.stroke(0, 0, 0, 0);
+                App.processing.strokeWeight(0);
+                App.processing.fill(255, 255, 255, 16);
                 App.processing.ellipse(nodePositions.get(i).x, nodePositions.get(i).y, (float) nodeSize, (float) nodeSize);
                 App.processing.fill(255);
                 App.processing.textSize((float) (nodeSize / 2));

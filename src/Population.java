@@ -26,9 +26,10 @@ class Population {
     void naturalSelection() {
         sortToSpecies();
         System.out.println(species.size());
-        testing();
+        calculateFitness();
+        drawPopulation(0, 0, App.processing.width, App.processing.height, 8, 6, 1);
         setBestGenome();
-        //modifyFitness();
+        modifyFitness();
         reproduction();
         mutateAll();
     }
@@ -58,7 +59,7 @@ class Population {
         }
     }
 
-    void testing() {
+    void calculateFitness() {
         for (Genome genome : genomes) {
             genome.calculateFitness();
         }
@@ -145,10 +146,62 @@ class Population {
         return species.get(i).get(j);
     }
 
-    void drawPopulation() {
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 3; j++) {
-                genomes.get(3 * i + j).draw(App.processing.width / 4 * i, App.processing.height / 3 * j, App.processing.width / 4 * (i + 1), App.processing.height / 3 * (j + 1), App.nodeMaxSize, App.weightMaxSize, 1);
+    void drawPopulation(double x1, double y1, double x2, double y2, int nx, int ny, int mode) {
+        if (mode == 0) {
+            double dx = (x2 - x1) / nx;
+            double dy = (y2 - y1) / ny;
+            App.processing.stroke(255, 100);
+            for (int i = 0; i < nx + 1; i++) {
+                App.processing.line((float) (x1 + (x2 - x1) / nx * i), (float) y1, (float) (x1 + (x2 - x1) / nx * i), (float) y2);
+            }
+            for (int i = 0; i < ny + 1; i++) {
+                App.processing.line((float) x1, (float) (y1 + (y2 - y1) / ny * i), (float) x2, (float) (y1 + (y2 - y1) / ny * i));
+            }
+            double y = y1;
+            int index = 0;
+            for (int i = 0; i < ny; i++) {
+                double x = x1;
+                for (int j = 0; j < nx; j++) {
+                    if (index < genomes.size()) {
+                        genomes.get(index).draw(x, y, x + dx, y + dy, App.nodeMaxSize, App.weightMaxSize, 1);
+                    }
+                    index++;
+                    x += dx;
+                }
+                y += dy;
+            }
+        }
+        if (mode == 1) {
+            double dx = (x2 - x1) / nx;
+            double dy = (y2 - y1) / ny;
+            App.processing.stroke(255, 100);
+            for (int i = 0; i < nx + 1; i++) {
+                App.processing.line((float) (x1 + (x2 - x1) / nx * i), (float) y1, (float) (x1 + (x2 - x1) / nx * i), (float) y2);
+            }
+            for (int i = 0; i < ny + 1; i++) {
+                App.processing.line((float) x1, (float) (y1 + (y2 - y1) / ny * i), (float) x2, (float) (y1 + (y2 - y1) / ny * i));
+            }
+            bestGenome.draw(x1, y1, x1 + dx, y1 + dy, App.nodeMaxSize, App.weightMaxSize, 1);
+            double y = y1;
+            int index = 0;
+            double x = x1;
+            for (int j = 1; j < nx; j++) {
+                x += dx;
+                if (index < genomes.size()) {
+                    genomes.get(index).draw(x, y, x + dx, y + dy, App.nodeMaxSize, App.weightMaxSize, 1);
+                }
+                index++;
+            }
+            for (int i = 1; i < ny; i++) {
+                y += dy;
+                x = x1;
+                for (int j = 0; j < nx; j++) {
+                    if (index < genomes.size()) {
+                        genomes.get(index).draw(x, y, x + dx, y + dy, App.nodeMaxSize, App.weightMaxSize, 1);
+                    }
+                    index++;
+                    x += dx;
+                }
             }
         }
     }

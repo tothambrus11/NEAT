@@ -316,6 +316,13 @@ class Genome {
                 allNodes.add(temp);
             }
         }
+
+        if (mode == 1 || mode == 2 || mode == 3) {
+            App.processing.textSize((float) (nodeSize));
+            App.processing.textAlign(CENTER, CENTER);
+            App.processing.text((float) fitness, (float) (x1 + x2) / 2, (float) (y1 + nodeSize * 0.5));
+            y1 += nodeSize;
+        }
         if (mode == 1 || mode == 2 || mode == 3) {
             x1 += nodeSize;
             x2 -= nodeSize;

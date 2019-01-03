@@ -21,7 +21,8 @@ public class App extends PApplet {
     }
 
     public void settings() {
-        size(1400, 800);
+        //size(1400, 800);
+        fullScreen();
     }
 
     public void setup() {
@@ -30,14 +31,14 @@ public class App extends PApplet {
         innovationIn = new ArrayList<>();
         innovationOut = new ArrayList<>();
         weightMaxSize = 4;
-        nodeMaxSize = 25;
+        nodeMaxSize = 20;
 
         weightMin = -100;
         weightMax = 100;
         c1 = 1;
         c2 = 1;
         c3 = 0.4;
-        threshold = 3;
+        threshold = 4;
 
         pop = new Population(2, 1, 1000);
 
@@ -94,7 +95,7 @@ public class App extends PApplet {
         g.calculateFitness();
         println(g.fitness);*/
 
-        pop.drawPopulation();
+        //pop.drawPopulation(0, 0, width, height, 8, 6, 0);
         println();
         println(frameCount);
         //pop.bestGenome.drawGenome1(350, 0, 700, 800/3, nodeMaxSize, weightMaxSize);
@@ -103,7 +104,7 @@ public class App extends PApplet {
 
         //println(frameRate);
         //g1.mutateAll();
-        //g1.testing();
+        //g1.calculateFitness();
         //println(pop.bestGenome.fitness);
         //println(pop.species.size());
         //background(255);

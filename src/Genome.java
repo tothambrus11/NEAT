@@ -171,8 +171,8 @@ class Genome {
                 }
             }
         }
-        if (size <= 20) return App.c1 * excessCount + App.c2 * disjointCount + App.c3 * weightDifference / machingCount;
-        return App.c1 * excessCount / nodes.size() + App.c2 * disjointCount / nodes.size() + App.c3 * weightDifference / machingCount;
+        /*if (size <= 20) */return App.c1 * excessCount + App.c2 * disjointCount + App.c3 * weightDifference / machingCount;
+        //return App.c1 * excessCount / nodes.size() + App.c2 * disjointCount / nodes.size() + App.c3 * weightDifference / machingCount;
     }
 
     int matchingGene(Genome partner, int innovationNumber) {

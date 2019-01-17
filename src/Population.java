@@ -13,7 +13,7 @@ class Population {
         genomes = new ArrayList<>();
         for (int i = 0; i < size_; i++) {
             genomes.add(new Genome(inputs, outputs));
-            for (int j = 0; j < 5; j++) {
+            for (int j = 0; j < 10; j++) {
                 genomes.get(i).mutate();
             }
         }
@@ -26,10 +26,10 @@ class Population {
         System.out.println(species.size());
         calculateFitness();
         setBestGenome();
-        drawPopulation(0, 0, App.processing.width, App.processing.height, 8, 6, 1);
+        drawPopulation(0, 0, App.processing.width, App.processing.height, 6, 4, 1);
         modifyFitness();
         reproduction();
-        mutateAll();
+        //mutateAll();
     }
 
     void sortToSpecies() {
@@ -113,12 +113,15 @@ class Population {
             } else {
                 genomes.add(parent2.crossover(parent1));
             }
+            genomes.get(genomes.size()-1).mutate();
         }
     }
 
     void mutateAll() {
         for (Genome genome : genomes) {
-            genome.mutate();
+            if (App.processing.random(1) < 0.8) {
+                genome.mutate();
+            }
         }
     }
 
